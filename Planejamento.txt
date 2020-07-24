@@ -1,0 +1,88 @@
+Controllers
+
+Socio (FEITO)
+-Cadastro (POST) (FEITO)
+-Editar perfil (UPDATE) (FEITO)
+-Pegar informações especificas do usuario (GET) (FEITO)
+
+Dependente (FEITO)
+-Deletar dependentes (DELETE) (FEITO)
+-Listar todos os dependentes do COM TODAS AS INFORMAÇOES(GET) (FEITO)
+-cadastro do dependente(POST) (FEITO)
+
+
+Auth (FEITO)
+-Login Socio (POST) (FEITO)
+-Login Adm (POST) (FEITO)
+
+Evento (FEITO)
+-Vizualizar Evento(array de Eventos pro feed) (GET) (FETO)
+-Criar Evento (POST) (FETIO)
+-Deletar Evento (DELETE) (FEITO)
+
+Adm (FEITO)
+-Cadastrar ADM (POST) (FEITO)
+-Deletar ADMS (DELETE) (FEITO)
+
+Adm_gestao (FEITO)
+
+-Listar Socios (GET) (FEITO) 
+-Listar Adminstradores (GET) (FEITO) 
+-Deletar socios (DELETE) (FEITO) 
+-Listar Solicitantes de carteira (GET) (FEITO) 
+
+SocioEvento (FEITO)
+
+-Cadastro no Evento e Verificar se o usuario participa (POST) (FEITO)
+-Deletar participacao(DELETE) (FEITO)
+-Pegar todos usuarios participantes(GET) (FEITO)
+
+Carteira (FEITO)
+-Solicitar carteira(POST) (FEITO)
+
+Pagamentos & Graficos   
+-verificar os dias restantes de assinatura(GET)
+
+
+Telas
+
+Acesso
+    -Cadastro socios (FEITO)
+    -login socios (FEITO)
+    -login administrador (FEITO)
+
+Perfil do socio
+    -Cadatro dependente
+    -Visualizar dependentes(lista)
+    -editar alguns dados de socio 
+    -feed
+     
+Painel adminstrativo
+
+    -Cadastro Adm 
+    -vizualizar lista de socios
+    -vizualizar lista de ADMS
+    -Log de atividaes
+    -vizualizar pessoas que participam do evento
+    -vizualizar pessoas que solicitaram carteira
+    -painel financeiro
+    -criar evento
+
+Home
+    -feed
+
+(tela de convenios )
+
+to do 
+
+
+-tabela de convenios & exibiçao no frontend (ok)
+-arrumar formulario cadastro socios e dependentes & exebir para o adm (ok)
+-criar campo de autenticado no socio tabela (ok)
+-solicitaçao de carteira deve exibir status de solicitado e pronto para entrega(ok)
+-adicionar dados bancarios ao usuario (com comprovante de banco)
+-criar logs
+-deletar usuario
+-tabela de Pagamentos
+-tabela de gastos
+-arrumar botoes nao dinamicos (autenticar usuario,cadastrar novo convenio)
