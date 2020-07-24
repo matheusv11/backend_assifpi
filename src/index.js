@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(routes);
 app.use(handle_errors);
 
-setInterval(verifica_fatura, 5000);
+setInterval(verifica_fatura, 21600000);
 
 
 app.listen(port);
