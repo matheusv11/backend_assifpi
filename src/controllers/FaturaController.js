@@ -39,7 +39,7 @@ module.exports={
             pending: "http://localhost:3000/perfil"
         },
         auto_return: "approved",
-        notification_url: "https://whispering-ravine-54403.herokuapp.com/notifications", //Update
+        notification_url: "https://backend-assifpi.herokuapp.com/notifications", //Update
 
         };
 
