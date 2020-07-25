@@ -19,11 +19,7 @@ module.exports={
         if(!req.files[0] || !req.files[1] ||!req.files[2]){
             return res.status(401).send({message: 'Coloque algum arquivo'})
         }
-        // console.log(req.files[0].filename)
-        // console.log(req.files) //mimetype //filename
-        // req.files.map((itens)=>{
-        //     console.log(itens.filename) //rg = req.files[0] etc...
-        // })
+
         const {nome,email,senha, cpf, rg, endereco, telefones}= req.body;
         const response= await connection('socios').where('email', email).select('email').first();
 
@@ -45,7 +41,6 @@ module.exports={
             endereco,
             telefones
         })
-// Caso ele nao tenha outros arquivos ele vai dar erro
 
         await connection('documentos').insert({
             rg: req.files[0].filename,
@@ -115,7 +110,7 @@ module.exports={
         // const data_vencimento= vencimento.getDate() + "/" + (vencimento.getMonth() + 1) + "/" + vencimento.getFullYear()
 
         await connection('faturas').insert({
-            socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 0
+            socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 1
         })
 
         log(`Confirmou o socio de id=${socio_id}`, req.adm_id);

@@ -85,5 +85,6 @@ to do
 -deletar usuario
 -tabela de Pagamentos
 -tabela de gastos
--arrumar botoes nao dinamicos (autenticar usuario,cadastrar novo convenio)
+-arrumar botoes nao dinamicos (autenticar usuario,cadastrar novo convenio,CONFECIONAR CARTEIRA)
 -arrumar postagem:avisos nao devem ter botoes e botao de participar deve sumir depois da data do evento
+-colocar home

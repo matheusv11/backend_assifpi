@@ -22,7 +22,7 @@ module.exports={
     async create(req,res){
         //Criar um dependente associado a um socio
 
-        if(!req.files[0]){
+        if(!req.files[0] || !req.files[1] || !req.files[2]){
             return res.status(401).send({message: 'Coloque algum arquivo'})
         }
         const socio_id= req.socio_id;
