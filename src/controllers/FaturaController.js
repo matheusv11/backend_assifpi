@@ -7,13 +7,17 @@ const produc_token= 'APP_USR-7254907496015842-072301-a78b3b8e3f32e66b1d9b591207d
 
 module.exports={
     async index(req,res){
-        const response= await connection('faturas').select('*');
+        const response= await connection('faturas').select('*'); //Listar faturas pro adm
 
         return res.status(200).send(response);
     },
 
     async index_socio_fatura(req,res){
+        const socio_id= req.socio_id;
 
+        const response= await connection('faturas').where('socio_id', socio_id).select('*');
+
+        return res.status(200).send(response);
     },
 
     async create(req,res){
