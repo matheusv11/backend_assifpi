@@ -7,7 +7,9 @@ const produc_token= 'APP_USR-7254907496015842-072301-a78b3b8e3f32e66b1d9b591207d
 
 module.exports={
     async index(req,res){
-        const response= await connection('faturas').select('*'); //Listar faturas pro adm
+        const response= await connection('faturas')
+        .join('socios', 'socios.id', '=', 'faturas.socio_id')
+        .where('faturas.status', 'pending').andWhere('faturas.renovada', 1).select('socios.nome','socios.cpf').distinct();//Evitar dados repetido
 
         return res.status(200).send(response);
     },
@@ -39,7 +41,7 @@ module.exports={
         external_reference: `${socio_id}-${id}`,
         back_urls: {
             success: "http://localhost:3000/perfil",
-            failure: "http://localhost:3000",
+            failure: "http://localhost:3000/perfil",
             pending: "http://localhost:3000/perfil"
         },
         auto_return: "approved",

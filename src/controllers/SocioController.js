@@ -110,7 +110,7 @@ module.exports={
         // const data_vencimento= vencimento.getDate() + "/" + (vencimento.getMonth() + 1) + "/" + vencimento.getFullYear()
 
         await connection('faturas').insert({
-            socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 1
+            socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 0
         })
 
         log(`Confirmou o socio de id=${socio_id}`, req.adm_id);

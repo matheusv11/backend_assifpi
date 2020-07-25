@@ -82,9 +82,8 @@ to do
 -solicitaçao de carteira deve exibir status de solicitado e pronto para entrega(ok)
 -adicionar dados bancarios ao usuario (com comprovante de banco)
 -criar logs
--deletar usuario
--tabela de Pagamentos
 -tabela de gastos
+-deletar usuario
 -arrumar botoes nao dinamicos (autenticar usuario,cadastrar novo convenio,CONFECIONAR CARTEIRA)
 -arrumar postagem:avisos nao devem ter botoes e botao de participar deve sumir depois da data do evento
 -colocar home
