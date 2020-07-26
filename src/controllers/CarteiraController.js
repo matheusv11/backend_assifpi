@@ -95,7 +95,7 @@ module.exports={
 
         await connection('carteiras').where('socio_id', socio_id).update({status:'confeccionada'})
         
-        log(`Alterou os status da carteira do socio de id=${socio_Id}`, req.adm_id)
+        log(`Alterou os status da carteira do socio de id=${socio_id}`, req.adm_id)
         
         return res.status(200).send({message: 'Confirmado a confeccao da carteira do socio'});
     },
