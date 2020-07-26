@@ -81,8 +81,9 @@ to do
 -criar campo de autenticado no socio tabela (ok)
 -solicitaçao de carteira deve exibir status de solicitado e pronto para entrega(ok)
 -adicionar dados bancarios ao usuario (com comprovante de banco)
--criar logs
+-criar logs(ok)
 -tabela de gastos
--deletar usuario
--arrumar botoes nao dinamicos - cadastrar novo convenio
--colocar home
+-arrumar botoes nao dinamicos - cadastrar novo convenio(ok)
+-colocar home(ok)
+-paginaçao
+-deletar usuario(ok)

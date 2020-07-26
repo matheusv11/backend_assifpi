@@ -84,7 +84,9 @@ module.exports={
 
         const response= await connection('dependentes')
         .join('documentos','documentos.dependente_id','=','dependentes.id')
-        .where('dependentes.cpf','like',`%${cpf}%`)
+        // .where('dependentes.cpf','like',`%${cpf}%`)
+        .join('socios','socios.id','=','dependentes.socio_id')
+        .where('socios.cpf','like',`%${cpf}%`)
         .select('documentos.id','dependentes.nome', 'dependentes.cpf', 'dependentes.endereco', 'dependentes.rg',
         'documentos.comprovante', 'dependentes.email', 'dependentes.id as socio_id', 'dependentes.confirmado', 
         'documentos.rg as imagem_rg', 'documentos.cpf as imagem_cpf','dependentes.telefones');

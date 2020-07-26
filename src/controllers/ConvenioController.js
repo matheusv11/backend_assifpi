@@ -18,7 +18,7 @@ module.exports={
                 titulo,descricao,imagem: req.files[0].filename
             })
 
-            return res.status(200).send({message: 'Convenio criado com sucesso'});
+            return res.status(200).send({message: 'Convenio criado com sucesso',imagem: req.files[0].filename}); //Pegar url da imagem pra exibir mas melhorar isso
         }
         else{
             await connection('convenios').insert({

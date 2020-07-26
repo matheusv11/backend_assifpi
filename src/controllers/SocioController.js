@@ -69,9 +69,10 @@ module.exports={
     
     async delete(req,res){
         const socio_id= req.params.id;
-        //Ainda falta deletar outras relacoes que envolvem ele tambem;
+
         await connection('socios').where('id', socio_id).delete();
-        
+        await connection('dependentes').where('socio_id', socio_id).delete();
+
         log(`Deletou o socio de id=${socio_id}`, req.adm_id);
 
         return res.status(200).send({message: 'Socio deletado com sucesso'});
