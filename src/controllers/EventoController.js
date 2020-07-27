@@ -6,7 +6,17 @@ module.exports={
     
     async index(req,res){
         //Listar eventos
-        const response= await connection('eventos').select('*').orderBy('id', 'desc');
+        const {page=1}=req.query;
+
+        const [total]= await connection('eventos').count();//Tira o array
+
+        const response= await connection('eventos')
+        .select('*')
+        .limit(5)
+        .offset((page-1)*5)
+        .orderBy('id', 'desc');
+
+        res.header('total-count', total['count(*)']);
 
         return res.status(200).send(response);
     },
