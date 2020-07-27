@@ -6,7 +6,7 @@ module.exports={
     
     async index(req,res){
         //Listar eventos
-        const response= await connection('eventos').select('*');
+        const response= await connection('eventos').select('*').orderBy('id', 'desc');
 
         return res.status(200).send(response);
     },

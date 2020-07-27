@@ -85,5 +85,7 @@ to do
 -tabela de gastos
 -arrumar botoes nao dinamicos - cadastrar novo convenio(ok)
 -colocar home(ok)
--paginaçao
+-paginaçao (postagens,lista de socios&dependentes)
 -deletar usuario(ok)
+-Pegar valor das cobrancas
+-painel financeiro - (graficos:arrecadação mensal,)
