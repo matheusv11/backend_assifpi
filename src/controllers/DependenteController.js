@@ -88,10 +88,20 @@ module.exports={
         .join('socios','socios.id','=','dependentes.socio_id')
         .where('socios.cpf','like',`%${cpf}%`)
         .select('documentos.id','dependentes.nome', 'dependentes.cpf', 'dependentes.endereco', 'dependentes.rg',
-        'documentos.comprovante', 'dependentes.email', 'dependentes.id as socio_id', 'dependentes.confirmado', 
+        'documentos.comprovante', 'dependentes.email', 'dependentes.id as dependente_id', 'dependentes.confirmado', 
         'documentos.rg as imagem_rg', 'documentos.cpf as imagem_cpf','dependentes.telefones');
 
         return res.status(200).send(response)
+    },
+
+    async deleteDependente(req,res){
+        //Log
+        const dependente_id= req.params.id;
+
+        await connection('dependentes').where('id', dependente_id).delete();
+
+        log(`Deletou o dependente de id ${dependente_id}`, req.adm_id);
+        return res.status(200).send({message: 'Dependente deletado com sucesso'})
     }
 }
 

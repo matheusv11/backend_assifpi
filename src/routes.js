@@ -46,6 +46,7 @@ routes.delete('/dependente/:id', jwt.socio, DepedenteController.delete);
 
 routes.post('/confirm_dependente/:id', jwt.adm, DepedenteController.confirm_dependente);
 routes.get('/index_dependentes', jwt.adm, DepedenteController.index_dependentes);
+routes.delete('/delete_dependente/:id', jwt.adm, DepedenteController.deleteDependente);
 
 //Adm
 routes.get('/adm', jwt.adm, AdmController.index);
