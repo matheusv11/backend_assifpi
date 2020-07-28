@@ -67,7 +67,8 @@ module.exports={
             let parts= external.split('-')
 
             await connection('faturas').where('socio_id', parts[0]).andWhere('id', parts[1]).update({
-                status: dados.data.status, boleto: dados.data.transaction_details.external_resource_url,compra_id: dados.data.id
+                status: dados.data.status, boleto: dados.data.transaction_details.external_resource_url,
+                compra_id: dados.data.id, valor: dados.data.transaction_details.net_received_amount//Valor com os 5%
             })
 
             return res.status(200).send();
