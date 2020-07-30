@@ -23,30 +23,25 @@ module.exports={
     },
 
     async index_pagamentos(req,res){
-        // Dados do pagamento //Logo so numeros // Mostrar por mes os recebimentos
-        //Pode percorrer todos meses e retornar um array com a posicao deles
-        //Usar index //Evitar split assim  //E la na frente pegar a posicao pela data -1 
-        // total['sum(`recebido`)']
 
-        const [total]= await connection('faturas').where('faturas.status', 'accepted').andWhere('renovada', 1).sum('recebido');
-        const meses= await connection('faturas').select('data_criacao').distinct();
+        const sim= new Promise(async resolve=>{
+            const [total]= await connection('faturas').where('faturas.status', 'accepted').andWhere('renovada', 1).sum('recebido');
+            const meses= await connection('faturas').select('data_criacao').distinct();
+            const data= meses.map(async meses=>{
+                const [ok]= await connection('faturas').where('data_criacao', meses.data_criacao).sum('recebido')
+                return ok
+            })
+            
+            resolve(data);
 
-        const data= meses.map(async meses=>{
-            const ok= await connection('faturas').where('data_criacao', meses.data_criacao).sum('recebido')
-            return ok
-        }) //Passar isso pra uma funcao de promise
+            
+        }).then((dados)=>{
+            Promise.all(dados).then((tudo)=>{
+                return res.json(tudo)
+            })
+        })
 
 
-        // Promise.all(data).then((dados)=>{
-        //     // console.log(dados)
-        // })
-        // const meses= await connection('faturas').whereIn('faturas.data_criacao', ['29/7/2020', '30/7/2020']).select('recebido')
-        
-        return res.json(data);
-        
-        // return res.status(200).send({
-        //     meses:[]
-        // });
     },
 
     async create(req,res){
