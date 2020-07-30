@@ -23,33 +23,48 @@ module.exports={
     },
 
     async index_pagamentos(req,res){
-        return new Promise(async resolve=>{
-            const [total]= await connection('faturas').where('faturas.status', 'accepted').andWhere('renovada', 1).sum('recebido');
+        // return new Promise(async resolve=>{
+        //     const [total]= await connection('faturas').where('faturas.status', 'accepted').andWhere('renovada', 1).sum('recebido');
             
-            const meses= await connection('faturas').select('data_criacao').distinct(); //Aqui ja pegar o mes
-            const data= meses.map(async meses=>{
-                const parts= meses.data_criacao.split('/');
-                // const parts= meses.split('/') // Podia ser por fora mas fica mais facil assim;
-                // const [ok]= await connection('faturas').where(connection.raw((`data_criacao`)), meses.data_criacao).sum(`recebido as total_de_${meses.data_criacao}`)
-                // const [ok]= await connection('faturas').where('data_criacao', parts[1]).sum(`recebido as total_de_${meses.data_criacao}`)
-
-                // const [ok]= await connection('faturas').where('data_criacao', `%?%/7/2020`).select('recebido')
-                const [ok]= await connection('faturas').select('recebido').whereRaw(`strftime('%m', data_criacao) = 7`)
-                console.log(ok)
-                // qb.select(knex.raw('EXTRACT(MONTH FROM ??)', 'lastPaymentDate'))
-
-                // const [ok]= await connection.raw(`select recebido from faturas where data_criacao`)
-                return ok
-            })
+        //     const meses= await connection('faturas').select('data_criacao').distinct(); //Aqui ja pegar o mes
             
-            resolve(data);
-            
-        }).then((dados)=>{
-            Promise.all(dados).then((tudo)=>{
-                return res.json(tudo)
-            })
-        })
+        //     const data= meses.map(async meses=>{
+        //         const parts= meses.data_criacao.split('/');
+        //         // const parts= meses.split('/') // Podia ser por fora mas fica mais facil assim;
+        //         // const [ok]= await connection('faturas').where(connection.raw((`data_criacao`)), meses.data_criacao).sum(`recebido as total_de_${meses.data_criacao}`)
+        //         // const [ok]= await connection('faturas').where('data_criacao', parts[1]).sum(`recebido as total_de_${meses.data_criacao}`)
 
+        //         // const [ok]= await connection('faturas').select(connection.raw(`strftime('%m',data_criacao)`))
+        //         console.log(ok)
+
+        //         // const [ok]= await connection.raw(`select recebido from faturas where data_criacao`)
+        //         return ok
+        //     })
+            
+        //     resolve(data);
+            
+        // }).then((dados)=>{
+        //     Promise.all(dados).then((tudo)=>{
+        //         return res.json(tudo)
+        //Seleciona todos pagamentos e retorna como pagamentos do mes e ano
+        //     })
+        // })
+
+        //Ai faz where in data_criacao for igual ao split dos meses e anos;
+        //Pegar todas as faturas de um mes/ano e somar 
+        //Todas faturas ja renovadas e que possuem valor de recebido
+        const meses= await connection('faturas').where('renovada', 1).select('data_criacao');//Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
+        
+        const format_meses= meses.map(meses=>{
+            let ok= meses.data_criacao.split('/')
+            return `${ok[1]}/${ok[2]}`
+        });
+
+        const ok= await connection('faturas').whereIn(connection.raw(`strftime('%m/%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),format_meses).select(`recebido as fatura_de_${1}`) //Somar AS DO MES/ANO
+
+        console.log(format_meses)
+
+        res.json(ok)
     },
 
     async create(req,res){

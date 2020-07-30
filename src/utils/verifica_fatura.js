@@ -7,9 +7,9 @@ module.exports=async ()=>{
     const response= await connection('faturas').select('*');
 
     const now = new Date();
-    const data_criacao= `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`
+    const data_criacao= `${now.getDate()}/${("0"+(now.getMonth()+1)).slice(-2)}/${now.getFullYear()}`
     const vencimento = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
-    const data_vencimento= vencimento.getDate() + "/" + (vencimento.getMonth() + 1) + "/" + vencimento.getFullYear()
+    const data_vencimento= `${vencimento.getDate()}/${("0"+(vencimento.getMonth()+1)).slice(-2)}/${vencimento.getFullYear()}`
 
     response.map(async dados=>{
         
