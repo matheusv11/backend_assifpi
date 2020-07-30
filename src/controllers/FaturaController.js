@@ -23,24 +23,24 @@ module.exports={
     },
 
     async index_pagamentos(req,res){
-
-        const sim= new Promise(async resolve=>{
+        return new Promise(async resolve=>{
             const [total]= await connection('faturas').where('faturas.status', 'accepted').andWhere('renovada', 1).sum('recebido');
+            
             const meses= await connection('faturas').select('data_criacao').distinct();
             const data= meses.map(async meses=>{
-                const [ok]= await connection('faturas').where('data_criacao', meses.data_criacao).sum('recebido')
+                const parts= meses.data_criacao.split('/');
+                // const parts= meses.split('/') // Podia ser por fora mas fica mais facil assim;
+                const [ok]= await connection('faturas').where(connection.raw(('data_criacao').split('/')[0]), meses.data_criacao).sum(`recebido as total_de_${meses.data_criacao}`)
                 return ok
             })
             
             resolve(data);
-
             
         }).then((dados)=>{
             Promise.all(dados).then((tudo)=>{
                 return res.json(tudo)
             })
         })
-
 
     },
 
