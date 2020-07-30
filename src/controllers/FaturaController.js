@@ -10,7 +10,7 @@ module.exports={
         const response= await connection('faturas')
         .join('socios', 'socios.id', '=', 'faturas.socio_id')
         .where('faturas.status', 'pending').andWhere('faturas.renovada', 1).select('socios.nome','socios.cpf').distinct();//Evitar dados repetido
-
+        //Condicoes pra recusada ainda
         return res.status(200).send(response);
     },
 
@@ -20,6 +20,33 @@ module.exports={
         const response= await connection('faturas').where('socio_id', socio_id).select('*');
 
         return res.status(200).send(response);
+    },
+
+    async index_pagamentos(req,res){
+        // Dados do pagamento //Logo so numeros // Mostrar por mes os recebimentos
+        //Pode percorrer todos meses e retornar um array com a posicao deles
+        //Usar index //Evitar split assim  //E la na frente pegar a posicao pela data -1 
+        // total['sum(`recebido`)']
+
+        const [total]= await connection('faturas').where('faturas.status', 'accepted').andWhere('renovada', 1).sum('recebido');
+        const meses= await connection('faturas').select('data_criacao').distinct();
+
+        const data= meses.map(async meses=>{
+            const ok= await connection('faturas').where('data_criacao', meses.data_criacao).sum('recebido')
+            return ok
+        }) //Passar isso pra uma funcao de promise
+
+
+        // Promise.all(data).then((dados)=>{
+        //     // console.log(dados)
+        // })
+        // const meses= await connection('faturas').whereIn('faturas.data_criacao', ['29/7/2020', '30/7/2020']).select('recebido')
+        
+        return res.json(data);
+        
+        // return res.status(200).send({
+        //     meses:[]
+        // });
     },
 
     async create(req,res){

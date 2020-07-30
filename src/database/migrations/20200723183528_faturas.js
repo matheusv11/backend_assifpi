@@ -11,6 +11,7 @@ exports.up = function(knex) {
         table.date('data_vencimento')
         table.string('renovada')
         table.string('valor')
+        table.string('recebido')
     })
   };
   

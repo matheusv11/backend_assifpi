@@ -86,7 +86,9 @@ routes.get('/logs', jwt.adm, LogController.index);
 //Faturas
 routes.get('/faturas', jwt.adm, FaturaController.index);
 routes.get('/index_socio_fatura', jwt.socio, FaturaController.index_socio_fatura);
+routes.get('/index_pagamentos', jwt.adm, FaturaController.index_pagamentos);
 routes.post('/faturas/:id', jwt.socio, FaturaController.create);
 routes.post('/notifications', FaturaController.notifications);
+
 
 module.exports= routes;
