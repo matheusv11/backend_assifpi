@@ -26,11 +26,19 @@ module.exports={
         return new Promise(async resolve=>{
             const [total]= await connection('faturas').where('faturas.status', 'accepted').andWhere('renovada', 1).sum('recebido');
             
-            const meses= await connection('faturas').select('data_criacao').distinct();
+            const meses= await connection('faturas').select('data_criacao').distinct(); //Aqui ja pegar o mes
             const data= meses.map(async meses=>{
                 const parts= meses.data_criacao.split('/');
                 // const parts= meses.split('/') // Podia ser por fora mas fica mais facil assim;
-                const [ok]= await connection('faturas').where(connection.raw(('data_criacao').split('/')[0]), meses.data_criacao).sum(`recebido as total_de_${meses.data_criacao}`)
+                // const [ok]= await connection('faturas').where(connection.raw((`data_criacao`)), meses.data_criacao).sum(`recebido as total_de_${meses.data_criacao}`)
+                // const [ok]= await connection('faturas').where('data_criacao', parts[1]).sum(`recebido as total_de_${meses.data_criacao}`)
+
+                // const [ok]= await connection('faturas').where('data_criacao', `%?%/7/2020`).select('recebido')
+                const [ok]= await connection('faturas').select('recebido').whereRaw(`strftime('%m', data_criacao) = 7`)
+                console.log(ok)
+                // qb.select(knex.raw('EXTRACT(MONTH FROM ??)', 'lastPaymentDate'))
+
+                // const [ok]= await connection.raw(`select recebido from faturas where data_criacao`)
                 return ok
             })
             
