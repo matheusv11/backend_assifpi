@@ -35,12 +35,18 @@ module.exports={
                 return index === self.indexOf(elem);
             });
             
-            const meses_anos= unico.map(datas=>{
-                // console.log(datas)
+            const meses_anos= unico.map(async datas=>{
+                const [ok]= await connection('faturas')
+                .where(connection.raw(`strftime('%m/%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),datas)
+                // .andWhere(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),'2020')
+                .sum(`recebido as total de ${datas}`)//SumDistinc ele remove a soma de um valor repetido //Somar AS DO MES/ANO
+                return ok
+                //La no front pode trasnformar pra inteirp o mes pra pegar a posicao
+                //Poderia ter join numa so de meses pra facilitar a busca
+                //Pode fazer um where pros anos
             })
-            const ok= await connection('faturas').where(connection.raw(`strftime('%m/%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),'07/2020').select(`recebido as fatura_de_${1}`)//SumDistinc ele remove a soma de um valor repetido //Somar AS DO MES/ANO
             
-            resolve(ok);
+            resolve(meses_anos);
             
         }).then((dados)=>{
             Promise.all(dados).then((tudo)=>{
