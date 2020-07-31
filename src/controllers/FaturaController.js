@@ -59,22 +59,33 @@ module.exports={
                 //Pode fazer um where pros anos
             })
             
-            const [emdia]= await connection('faturas').where('renovada', 1).andWhere('status', 'accepted').count()
-            const pendentes= await connection('faturas').select('*')
+            //GRAFICO PIZZA -----------
+            const [emdia]= await connection('faturas')
+            .where('renovada', 1)
+            .andWhere('status', 'accepted')
+            .countDistinct('socio_id as emdia') //Verificar direito isso
             
-            console.log(emdia['count(*)'])
-            console.log(pendentes)
-            //Socios em dia
-            //Socios pendentes
-            //Total de usuarios
-            resolve({meses_anos, anos});
+            const [pendentes]= await connection('faturas')
+            // .join('socios', 'socios.id', '=', 'faturas.socio_id') //countDistinct('socios.id')
+            .where('faturas.status', 'pending').andWhere('faturas.renovada', 1).countDistinct('faturas.socio_id as pendentes');//Nao vai contar dados repetidos //Evitar dados repetido
+            
+            const [total]= await connection('socios').count()
+            
+            const doughnut= [emdia['emdia'],pendentes['pendentes'],total['count(*)']] //Object.values //Talvez algo assim tem validade para outros arrays acima
+
+            //---------------------------
+
+            resolve({
+                meses_anos, anos, doughnut
+                // total_socios: total['count(*)'],emdia: emdia['emdia'], pendentes: pendentes['pendentes']
+            });
     
         }).then((dados)=>{
 
             Promise.all(dados.meses_anos).then((tudo)=>{
                 return res.json({
-                    anos: dados.anos, //Para o select
-                    meses_anos: tudo
+                    anos: dados.anos, meses_anos: tudo,
+                    doughnut: dados.doughnut
                 })
             })
         })
