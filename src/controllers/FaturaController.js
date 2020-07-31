@@ -27,14 +27,16 @@ module.exports={
             const {ano="2020"}= req.query; 
             
             const anos= await connection('faturas').where('renovada', 1)
-            .select(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2)) as ano`))
-            .distinct(); //Ou fazia split
+            .select(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2)) as ano`)) //Verificar se esse formato ta com mes e dia correto //ex: https://stackoverflow.com/questions/14091183/sqlite-order-by-date1530019888000
+            .distinct(); //Ou fazia split //Por conta o strftime tenho que ter 0
             
             const meses= await connection('faturas')
             .where('renovada', 1)
             .andWhere(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),ano) //Selecionar o ano
+            .orderBy(connection.raw('substr(data_criacao, 4, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
             .select('data_criacao').distinct(); //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
-
+            //01/04/2020
+            //0,1,2,3,4
             const todo_meses= meses.map(meses=>{
                 let ok= meses.data_criacao.split('/')
                 return `${ok[1]}/${ok[2]}`//Podia fazer 
@@ -44,21 +46,20 @@ module.exports={
                 return index === self.indexOf(elem); //Evitar dados repetidos
             });
 
-            // Pegar fatura de todos meses daquele ano
-
             const meses_anos= unico.map(async datas=>{
                 const [ok]= await connection('faturas')
                 .where(connection.raw(`strftime('%m/%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),datas)
-                .sum(`recebido as total de ${datas}`)//SumDistinc ele remove a soma de um valor repetido //Somar AS DO MES/ANO
+                // .sum(`recebido as total de ${datas}`)//SumDistinc ele remove a soma de um valor repetido //Somar AS DO MES/ANO
+                .sum(`recebido as ${datas}`)
+
                 return ok
                 //La no front pode trasnformar pra inteirp o mes pra pegar a posicao
                 //Poderia ter join numa so de meses pra facilitar a busca
                 //Pode fazer um where pros anos
             })
             
-            resolve({meses_anos, anos})
-            ;
-            
+            resolve({meses_anos, anos});
+    
         }).then((dados)=>{
 
             Promise.all(dados.meses_anos).then((tudo)=>{
