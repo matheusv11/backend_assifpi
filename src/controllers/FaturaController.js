@@ -24,21 +24,31 @@ module.exports={
 
     async index_pagamentos(req,res){
         return new Promise(async resolve=>{
-            const meses= await connection('faturas').where('renovada', 1).select('data_criacao').distinct(); //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
-        
+            const {ano="2020"}= req.query; 
+            
+            const anos= await connection('faturas').where('renovada', 1)
+            .select(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2)) as ano`))
+            .distinct(); //Ou fazia split
+            
+            const meses= await connection('faturas')
+            .where('renovada', 1)
+            .andWhere(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),ano) //Selecionar o ano
+            .select('data_criacao').distinct(); //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
+
             const todo_meses= meses.map(meses=>{
                 let ok= meses.data_criacao.split('/')
-                return `${ok[1]}/${ok[2]}`
+                return `${ok[1]}/${ok[2]}`//Podia fazer 
             });
     
             const unico = todo_meses.filter(function(elem, index, self) {
-                return index === self.indexOf(elem);
+                return index === self.indexOf(elem); //Evitar dados repetidos
             });
-            
+
+            // Pegar fatura de todos meses daquele ano
+
             const meses_anos= unico.map(async datas=>{
                 const [ok]= await connection('faturas')
                 .where(connection.raw(`strftime('%m/%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),datas)
-                // .andWhere(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),'2020')
                 .sum(`recebido as total de ${datas}`)//SumDistinc ele remove a soma de um valor repetido //Somar AS DO MES/ANO
                 return ok
                 //La no front pode trasnformar pra inteirp o mes pra pegar a posicao
@@ -46,21 +56,19 @@ module.exports={
                 //Pode fazer um where pros anos
             })
             
-            resolve(meses_anos);
+            resolve({meses_anos, anos})
+            ;
             
         }).then((dados)=>{
-            Promise.all(dados).then((tudo)=>{
-                return res.json(tudo)
+
+            Promise.all(dados.meses_anos).then((tudo)=>{
+                return res.json({
+                    anos: dados.anos, //Para o select
+                    meses_anos: tudo
+                })
             })
         })
 
-        // const {page="2020"}= req.query; 
-        // const [anos]= await connection('faturas').where('renovada', 1)
-        // .where(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),page)
-        // .select(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2)) as ano`))
-        // .distinct(); //Ou fazia split 
-
-        // res.json(anos)
     },
 
     async create(req,res){

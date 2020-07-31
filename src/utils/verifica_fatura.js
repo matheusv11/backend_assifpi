@@ -7,10 +7,11 @@ module.exports=async ()=>{
     const response= await connection('faturas').select('*');
 
     const now = new Date();
-    const data_criacao= `${now.getDate()}/${("0"+(now.getMonth()+1)).slice(-2)}/${now.getFullYear()}`
+    const data_criacao= `${("0"+(now.getDate())).slice(-2)}/${("0"+(now.getMonth()+1)).slice(-2)}/${now.getFullYear()}`
     const vencimento = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
-    const data_vencimento= `${vencimento.getDate()}/${("0"+(vencimento.getMonth()+1)).slice(-2)}/${vencimento.getFullYear()}`
-
+    const data_vencimento= `${("0"+(now.getDate())).slice(-2)}/${("0"+(vencimento.getMonth()+1)).slice(-2)}/${vencimento.getFullYear()}`
+    //Trabalhar melhor com as datas e zeros pro bd e front
+        
     response.map(async dados=>{
         
         let vencimento= dados.data_vencimento//Data de vencimento
