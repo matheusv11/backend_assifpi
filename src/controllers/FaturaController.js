@@ -54,8 +54,13 @@ module.exports={
             })
         })
 
-       
+        // const {page="2020"}= req.query; 
+        // const [anos]= await connection('faturas').where('renovada', 1)
+        // .where(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),page)
+        // .select(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2)) as ano`))
+        // .distinct(); //Ou fazia split 
 
+        // res.json(anos)
     },
 
     async create(req,res){
