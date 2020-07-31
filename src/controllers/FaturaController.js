@@ -29,7 +29,8 @@ module.exports={
             const anos= await connection('faturas').where('renovada', 1)
             .select(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2)) as ano`)) //Verificar se esse formato ta com mes e dia correto //ex: https://stackoverflow.com/questions/14091183/sqlite-order-by-date1530019888000
             .distinct(); //Ou fazia split //Por conta o strftime tenho que ter 0
-            
+            //Gastos //Usuarios esperando confeccao //Usuarios esperanndo validacao            
+
             const meses= await connection('faturas')
             .where('renovada', 1)
             .andWhere(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),ano) //Selecionar o ano
@@ -58,6 +59,14 @@ module.exports={
                 //Pode fazer um where pros anos
             })
             
+            const [emdia]= await connection('faturas').where('renovada', 1).andWhere('status', 'accepted').count()
+            const pendentes= await connection('faturas').select('*')
+            
+            console.log(emdia['count(*)'])
+            console.log(pendentes)
+            //Socios em dia
+            //Socios pendentes
+            //Total de usuarios
             resolve({meses_anos, anos});
     
         }).then((dados)=>{
