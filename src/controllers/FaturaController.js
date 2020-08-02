@@ -36,17 +36,19 @@ module.exports={
 
             //GANHOS --------
 
-            const meses= await connection('faturas')
+            const meses_anos= await connection('faturas')
             .where('renovada', 1)
             .andWhere(connection.raw(`substr(data_criacao, 7, 4)`),ano) //Selecionar o ano
             .orderBy(connection.raw('substr(data_criacao, 4, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
             .groupBy(connection.raw('substr(data_criacao, 4, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
             .select(connection.raw(`substr(data_criacao, 4, 2) || '/' || substr(data_criacao, 7, 4) as meses_anos`)) //Ou object values pra remover o objeto
 
-            const meses_anos= meses.map(async datas=>{
+            const soma_ganhos= meses_anos.map(async datas=>{
+
                 const [ok]= await connection('faturas')
                 .where(connection.raw(`substr(data_criacao, 4, 2) || '/' || substr(data_criacao, 7, 4)`),datas.meses_anos)
                 .sum(`recebido as ${datas.meses_anos}`)
+
                 return ok
             })
 
@@ -65,7 +67,6 @@ module.exports={
                 return sum_gastos;
             })
             
-
             //GRAFICO PIZZA -----------
             const [emdia]= await connection('faturas')
             .where('renovada', 1)
@@ -80,16 +81,19 @@ module.exports={
             const doughnut= [emdia['emdia'],pendentes['pendentes'],total['count(*)']] //Object.values //Talvez algo assim tem validade para outros arrays acima
 
             //---------------------------
-            resolve({meses_anos, soma_gastos, anos, doughnut});
+
+            resolve({soma_ganhos, soma_gastos, anos, doughnut});
 
         }).then((dados)=>{
 
-            Promise.all(dados.meses_anos).then((tudo)=>{
+            Promise.all(dados.soma_ganhos).then((tudo)=>{
+
                 return res.json({
-                    anos: dados.anos, meses_anos: tudo,
+                    anos: dados.anos, soma_ganhos: tudo,
                     doughnut: dados.doughnut
                 })
             })
+            // return res.json('teste')
 
             })
 
