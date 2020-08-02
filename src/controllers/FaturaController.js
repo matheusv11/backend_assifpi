@@ -24,41 +24,48 @@ module.exports={
 
     async index_pagamentos(req,res){
         return new Promise(async resolve=>{
-            const {ano="2020"}= req.query; 
-            
+            const {ano="2020"}= req.query;            
+
             const anos= await connection('faturas').where('renovada', 1)
             .select(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2)) as ano`)) //Verificar se esse formato ta com mes e dia correto //ex: https://stackoverflow.com/questions/14091183/sqlite-order-by-date1530019888000
-            .distinct(); //Ou fazia split //Por conta o strftime tenho que ter 0
-            //Gastos //Usuarios esperando confeccao //Usuarios esperanndo validacao            
+            .distinct(); 
+
+            const anos_gastos= await connection('gastos')
+            .select(connection.raw(`strftime('%Y', substr(data, 7, 4) || '-' || substr(data, 4, 2) || '-' || substr(data, 1, 2)) as ano`))
+            .distinct()
+
+            //GANHOS --------
 
             const meses= await connection('faturas')
             .where('renovada', 1)
-            .andWhere(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),ano) //Selecionar o ano
+            .andWhere(connection.raw(`substr(data_criacao, 7, 4)`),ano) //Selecionar o ano
             .orderBy(connection.raw('substr(data_criacao, 4, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
-            .select('data_criacao').distinct(); //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
-            //01/04/2020
-            //0,1,2,3,4
-            const todo_meses= meses.map(meses=>{
-                let ok= meses.data_criacao.split('/')
-                return `${ok[1]}/${ok[2]}`//Podia fazer 
-            });
-    
-            const unico = todo_meses.filter(function(elem, index, self) {
-                return index === self.indexOf(elem); //Evitar dados repetidos
-            });
+            .groupBy(connection.raw('substr(data_criacao, 4, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
+            .select(connection.raw(`substr(data_criacao, 4, 2) || '/' || substr(data_criacao, 7, 4) as meses_anos`)) //Ou object values pra remover o objeto
 
-            const meses_anos= unico.map(async datas=>{
+            const meses_anos= meses.map(async datas=>{
                 const [ok]= await connection('faturas')
-                .where(connection.raw(`strftime('%m/%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2))`),datas)
-                // .sum(`recebido as total de ${datas}`)//SumDistinc ele remove a soma de um valor repetido //Somar AS DO MES/ANO
-                .sum(`recebido as ${datas}`)
-
+                .where(connection.raw(`substr(data_criacao, 4, 2) || '/' || substr(data_criacao, 7, 4)`),datas.meses_anos)
+                .sum(`recebido as ${datas.meses_anos}`)
                 return ok
-                //La no front pode trasnformar pra inteirp o mes pra pegar a posicao
-                //Poderia ter join numa so de meses pra facilitar a busca
-                //Pode fazer um where pros anos
+            })
+
+            //GASTOS --------
+            const meses_gastos= await connection('gastos')
+            // .andWhere(connection.raw(`substr(data_criacao, 7, 4)`),ano) //Selecionar o ano
+            .orderBy(connection.raw('substr(data, 4, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
+            .groupBy(connection.raw('substr(data, 4, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
+            .select(connection.raw(`substr(data, 4, 2) || '/' || substr(data, 7, 4) as meses_gastos`)) //Ou object values pra remover o objeto
+
+            const soma_gastos= meses_gastos.map(async gastos=>{
+                const [sum_gastos]= await connection('gastos')
+                .where(connection.raw(`substr(data, 4, 2) || '/' || substr(data, 7, 4)`), gastos.meses_gastos)
+                .sum(`valor as ${gastos.meses_gastos}`)
+
+                return sum_gastos;
             })
             
+
             //GRAFICO PIZZA -----------
             const [emdia]= await connection('faturas')
             .where('renovada', 1)
@@ -66,7 +73,6 @@ module.exports={
             .countDistinct('socio_id as emdia') //Verificar direito isso
             
             const [pendentes]= await connection('faturas')
-            // .join('socios', 'socios.id', '=', 'faturas.socio_id') //countDistinct('socios.id')
             .where('faturas.status', 'pending').andWhere('faturas.renovada', 1).countDistinct('faturas.socio_id as pendentes');//Nao vai contar dados repetidos //Evitar dados repetido
             
             const [total]= await connection('socios').count()
@@ -74,12 +80,8 @@ module.exports={
             const doughnut= [emdia['emdia'],pendentes['pendentes'],total['count(*)']] //Object.values //Talvez algo assim tem validade para outros arrays acima
 
             //---------------------------
+            resolve({meses_anos, soma_gastos, anos, doughnut});
 
-            resolve({
-                meses_anos, anos, doughnut
-                // total_socios: total['count(*)'],emdia: emdia['emdia'], pendentes: pendentes['pendentes']
-            });
-    
         }).then((dados)=>{
 
             Promise.all(dados.meses_anos).then((tudo)=>{
@@ -88,7 +90,8 @@ module.exports={
                     doughnut: dados.doughnut
                 })
             })
-        })
+
+            })
 
     },
 
