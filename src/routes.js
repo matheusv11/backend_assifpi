@@ -13,6 +13,7 @@ const CarteiraController= require('./controllers/CarteiraController');
 const ConvenioController= require('./controllers/ConvenioController');
 const LogController= require('./controllers/LogController');
 const FaturaController= require('./controllers/FaturaController');
+const GastoController= require('./controllers/GastoController');
 
 //Configs
 const jwt= require('./middlewares/jwt');
@@ -90,5 +91,9 @@ routes.get('/index_pagamentos', jwt.adm, FaturaController.index_pagamentos);
 routes.post('/faturas/:id', jwt.socio, FaturaController.create);
 routes.post('/notifications', FaturaController.notifications);
 
+//Gastos
+routes.get('/gastos', jwt.adm, GastoController.index);
+routes.post('/gastos', jwt.adm, GastoController.create);
+routes.delete('/gastos/:id', jwt.adm, GastoController.delete);
 
 module.exports= routes;
