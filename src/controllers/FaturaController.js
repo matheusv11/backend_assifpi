@@ -4,6 +4,7 @@ const mercadopago = require ('mercadopago');
 const test_token= 'TEST-7299947505493806-072301-a203cd55e08507243af00f152f981e14-223033116'
 // const produc_token= 'APP_USR-7299947505493806-072301-64bc40a25eb38aa61625953a56a198e6-223033116'
 const produc_token= 'APP_USR-7254907496015842-072301-a78b3b8e3f32e66b1d9b591207db3caa-613885036'
+const WrapperPromise= require('../utils/WrapperPromise');
 
 module.exports={
     async index(req,res){
@@ -23,6 +24,7 @@ module.exports={
     },
 
     async index_pagamentos(req,res){
+
         return new Promise(async resolve=>{
             const {ano="2020"}= req.query;            
 
@@ -35,7 +37,6 @@ module.exports={
             .distinct()
 
             //GANHOS --------
-
             const meses_anos= await connection('faturas')
             .where('renovada', 1)
             .andWhere(connection.raw(`substr(data_criacao, 7, 4)`),ano) //Selecionar o ano
@@ -81,22 +82,18 @@ module.exports={
             const doughnut= [emdia['emdia'],pendentes['pendentes'],total['count(*)']] //Object.values //Talvez algo assim tem validade para outros arrays acima
 
             //---------------------------
+            const WrappedGanhos= await WrapperPromise(soma_ganhos);
+            const WrappedGastos= await WrapperPromise(soma_gastos);
 
-            resolve({soma_ganhos, soma_gastos, anos, doughnut});
+            resolve({soma_ganhos: WrappedGanhos, soma_gastos: WrappedGastos, anos, doughnut});
 
-        }).then((dados)=>{
+        }).then((dados)=>{            
+            return res.json({
+                anos: dados.anos, soma_ganhos: dados.soma_ganhos,
+                soma_gastos: dados.soma_gastos, doughnut: dados.doughnut
+            });
 
-            Promise.all(dados.soma_ganhos).then((tudo)=>{
-
-                return res.json({
-                    anos: dados.anos, soma_ganhos: tudo,
-                    doughnut: dados.doughnut
-                })
-            })
-            // return res.json('teste')
-
-            })
-
+        });
     },
 
     async create(req,res){
