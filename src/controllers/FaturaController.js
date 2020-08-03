@@ -31,10 +31,17 @@ module.exports={
             const anos= await connection('faturas').where('renovada', 1)
             .select(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2)) as ano`)) //Verificar se esse formato ta com mes e dia correto //ex: https://stackoverflow.com/questions/14091183/sqlite-order-by-date1530019888000
             .distinct(); 
-
+            
             const anos_gastos= await connection('gastos')
+            // .whereNotIn(connection.raw(`substr(data, 7, 4)`), anos.map(anos=>{return anos.ano})) //Melhorar isso
             .select(connection.raw(`strftime('%Y', substr(data, 7, 4) || '-' || substr(data, 4, 2) || '-' || substr(data, 1, 2)) as ano`))
             .distinct()
+
+            const intersection= anos.concat(anos_gastos);
+            
+            const filter_anos = intersection.filter((item, pos, self)=> {
+                return self[pos].ano.indexOf(item.ano) !== pos;
+            })
 
             //GANHOS --------
             const meses_anos= await connection('faturas')
@@ -55,7 +62,7 @@ module.exports={
 
             //GASTOS --------
             const meses_gastos= await connection('gastos')
-            // .andWhere(connection.raw(`substr(data_criacao, 7, 4)`),ano) //Selecionar o ano
+            .andWhere(connection.raw(`substr(data, 7, 4)`),ano) //Selecionar o ano
             .orderBy(connection.raw('substr(data, 4, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
             .groupBy(connection.raw('substr(data, 4, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
             .select(connection.raw(`substr(data, 4, 2) || '/' || substr(data, 7, 4) as meses_gastos`)) //Ou object values pra remover o objeto
@@ -85,7 +92,7 @@ module.exports={
             const WrappedGanhos= await WrapperPromise(soma_ganhos);
             const WrappedGastos= await WrapperPromise(soma_gastos);
 
-            resolve({soma_ganhos: WrappedGanhos, soma_gastos: WrappedGastos, anos, doughnut});
+            resolve({soma_ganhos: WrappedGanhos, soma_gastos: WrappedGastos, anos: filter_anos, doughnut});
 
         }).then((dados)=>{            
             return res.json({
