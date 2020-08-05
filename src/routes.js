@@ -56,7 +56,7 @@ routes.delete('/adm/:id', jwt.adm, AdmController.delete);
 
 //Eventos
 routes.get('/evento', EventoController.index);
-routes.post('/evento', jwt.adm, EventoController.create);
+routes.post('/evento', jwt.adm, multer(multer_config).array('file'), EventoController.create);
 routes.delete('/evento/:id', jwt.adm, EventoController.delete);
 
 //SocioEvento

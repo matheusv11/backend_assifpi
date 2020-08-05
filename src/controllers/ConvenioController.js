@@ -11,23 +11,17 @@ module.exports={
     async create(req,res){
         const {titulo,descricao}=req.body;
         //Temporario
+        if(!req.files[0] || !req.files[1]){
+            return res.status(401).send({message: `Preencha os arquivos`})
+        } //
         log(`Criou um convenio`, req.adm_id);
+        
+        await connection('convenios').insert({
+            titulo,descricao,imagem: req.files[0].filename, anexo: req.files[1].filename
+        })
 
-        if(req.files[0]){
-            await connection('convenios').insert({
-                titulo,descricao,imagem: req.files[0].filename
-            })
-
-            return res.status(200).send({message: 'Convenio criado com sucesso',imagem: req.files[0].filename}); //Pegar url da imagem pra exibir mas melhorar isso
-        }
-        else{
-            await connection('convenios').insert({
-                titulo,descricao
-            })
-
-            return res.status(200).send({message: 'Convenio criado com sucesso'});   
-        }
-
+        return res.status(200).send({message: 'Convenio criado com sucesso',imagem: req.files[0].filename, anexo: req.files[1].filename}); //Pegar url da imagem pra exibir mas melhorar isso
+  
 
     },
 

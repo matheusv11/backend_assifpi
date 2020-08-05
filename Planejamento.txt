@@ -89,3 +89,5 @@ to do
 -deletar usuario(ok)
 -Pegar valor das cobrancas
 -painel financeiro - (graficos:arrecadação mensal,)
+
+-paginas com problema no mobile :cadastro socio e cadastro postagem 

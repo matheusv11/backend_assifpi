@@ -23,14 +23,26 @@ module.exports={
 
     async create(req,res){
         const {data,hora,local,titulo, descricao}=req.body
-
-        await connection('eventos').insert({
-            data,
-            hora,
-            local,
-            titulo,
-            descricao
-        })
+        
+        if(!req.files[0]){
+            await connection('eventos').insert({
+                data,
+                hora,
+                local,
+                titulo,
+                descricao,
+            })
+        }
+        else{
+            await connection('eventos').insert({
+                data,
+                hora,
+                local,
+                titulo,
+                descricao,
+                anexo: req.files[0].filename
+            })
+        }
 
         log('Criou um evento', req.adm_id);
 
