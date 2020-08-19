@@ -1,8 +1,8 @@
 const connection= require('../database/connection');
 const axios= require('axios');
 const mercadopago = require ('mercadopago');
-const test_token= process.env.DEV_TOKEN || 'TEST-7299947505493806-072301-a203cd55e08507243af00f152f981e14-223033116'
-const produc_token= 'APP_USR-7254907496015842-072301-a78b3b8e3f32e66b1d9b591207db3caa-613885036'
+const test_token= process.env.DEV_TOKEN || 'TEST-7299947505493806-072301-a203cd55e08507243af00f152f981e14-223033116';
+const produc_token= process.env.PRODUCTION_TOKEN || 'APP_USR-7254907496015842-072301-a78b3b8e3f32e66b1d9b591207db3caa-613885036';
 const WrapperPromise= require('../utils/WrapperPromise');
 
 module.exports={
