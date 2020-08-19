@@ -106,7 +106,7 @@ module.exports={
         await connection('socios').where('id', socio_id).update('confirmado', true);
 
         const now = new Date();
-        const data_criacao= `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+        const data_criacao= `${("0"+(now.getDate())).slice(-2)}/${("0"+(now.getMonth()+1)).slice(-2)}/${now.getFullYear()}`
         // const vencimento = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));//Vence ainda hoje
         // const data_vencimento= vencimento.getDate() + "/" + (vencimento.getMonth() + 1) + "/" + vencimento.getFullYear()
 

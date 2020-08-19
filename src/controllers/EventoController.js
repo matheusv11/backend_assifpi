@@ -22,27 +22,16 @@ module.exports={
     },
 
     async create(req,res){
-        const {data,hora,local,titulo, descricao}=req.body
+        const {data,hora,local,titulo, descricao}=req.body;
         
-        if(!req.files[0]){
-            await connection('eventos').insert({
-                data,
+        await connection('eventos').insert({
+                data: data==='undefined/undefined/' ? null : data,
                 hora,
                 local,
                 titulo,
                 descricao,
-            })
-        }
-        else{
-            await connection('eventos').insert({
-                data,
-                hora,
-                local,
-                titulo,
-                descricao,
-                anexo: req.files[0].filename
-            })
-        }
+                anexo: req.files[0] ? req.files[0].filename : null
+        })
 
         log('Criou um evento', req.adm_id);
 
