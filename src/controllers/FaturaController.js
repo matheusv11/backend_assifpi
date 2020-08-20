@@ -120,9 +120,9 @@ module.exports={
 
         external_reference: `${socio_id}-${id}`,
         back_urls: {
-            success: "http://localhost:3000/perfil",
-            failure: "http://localhost:3000/perfil",
-            pending: "http://localhost:3000/perfil"
+            success: "https://frontend-assifpi.herokuapp.com/perfil",
+            failure: "https://frontend-assifpi.herokuapp.com/perfil",
+            pending: "https://frontend-assifpi.herokuapp.com/perfil"
         },
         auto_return: "approved",
         notification_url: "https://backend-assifpi.herokuapp.com/notifications", //Update
