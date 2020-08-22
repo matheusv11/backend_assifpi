@@ -25,7 +25,7 @@ module.exports={
     async index_pagamentos(req,res){
 
         return new Promise(async resolve=>{
-            const {ano="2020"}= req.query;            
+            const {ano="2019"}= req.query;
 
             const anos= await connection('faturas').where('renovada', 1)
             .select(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2)) as ano`)) //Verificar se esse formato ta com mes e dia correto //ex: https://stackoverflow.com/questions/14091183/sqlite-order-by-date1530019888000
@@ -116,7 +116,6 @@ module.exports={
             quantity: 1,
             }
         ],
-
 
         external_reference: `${socio_id}-${id}`,
         back_urls: {
