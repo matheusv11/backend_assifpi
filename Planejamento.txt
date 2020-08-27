@@ -91,3 +91,43 @@ to do
 -painel financeiro - (graficos:arrecadação mensal,)
 
 -paginas com problema no mobile :cadastro socio e cadastro postagem 
+
+Funcionalidades:
+	Geral:
+	1.confirmar ação atraves do alert	
+	2.colcoar itens e enfeitar pagina
+	3.Mudar a cor vermelha da navbar(sugestao azul)	
+	4.Mascaras para inputs
+	5.Anexar balancete(talvez nao)
+	6.Arrumar portugues
+
+	Eventos/Convênios:
+	1.Imagem de fundo 
+	2.Eventos de forma crescente
+	3.Solicitação de espaço pra evento
+	4.Notificação por email novos eventos
+
+	Adm:
+	1.Lembrar que adm pode cadastrar usuario já disponivel
+	2.Alterar tamanho RG
+	3.Gerar boleto com qualquer valor(perguntar prof)
+	4.Mudar dados de pagamentos
+
+	Socio:
+	1.Recuperar senha pelo adm(só pelo adm ou por email tambem?)
+	2.Frente e verso RG ou so o CNH
+	3.tres status para carteira (solicitada, em confecção e confeccionada)(talvez nao)
+
+	Dependentes:
+	1.adicionar comprovante de parentesco pro dependente
+	
+	Pagementos:
+	1.pagamento antecipado
+	2.juros para pagamentos atrasados
+	3.DEBITO AUTOMATICO
+
+
+	
+FAZER PERGUNTAS FRANCIERK TODAY NIGTH
+tres status para carteira (solicitada, em confecção e confeccionada)(talvez nao)
+Gerar boleto com qualquer valor(perguntar prof)
