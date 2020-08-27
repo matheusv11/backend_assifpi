@@ -83,9 +83,7 @@ module.exports={
             const [pendentes]= await connection('faturas')
             .where('faturas.status', 'pending').andWhere('faturas.renovada', 1).countDistinct('faturas.socio_id as pendentes');//Nao vai contar dados repetidos //Evitar dados repetido
             
-            const [total]= await connection('socios').count()
-            
-            const doughnut= [emdia['emdia'],pendentes['pendentes'],total['count(*)']] //Object.values //Talvez algo assim tem validade para outros arrays acima
+            const doughnut= [emdia['emdia'],pendentes['pendentes']] //Object.values //Talvez algo assim tem validade para outros arrays acima
 
             //---------------------------
             const WrappedGanhos= await WrapperPromise(soma_ganhos);

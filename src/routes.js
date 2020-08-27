@@ -73,8 +73,8 @@ routes.post('/carteira/:id', jwt.socio, CarteiraController.create_dependente);
 routes.get('/index_carteira_socio', jwt.socio, CarteiraController.index_carteira_socio);
 routes.get('/index_carteira_dependente/:id', jwt.socio, CarteiraController.index_carteira_dependente);
 
-routes.post('/change_carteira_socio/:id', jwt.adm, CarteiraController.change_carteira_socio)
-routes.post('/change_carteira_dependente/:id', jwt.adm, CarteiraController.change_carteira_dependente);
+routes.put('/change_carteira_socio/:id', jwt.adm, CarteiraController.change_carteira_socio)
+routes.put('/change_carteira_dependente/:id', jwt.adm, CarteiraController.change_carteira_dependente);
 
 //Convenios
 routes.get('/convenios', ConvenioController.index);
