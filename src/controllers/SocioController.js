@@ -80,15 +80,21 @@ module.exports={
     },
 
     async index_socios(req,res){
-        const {cpf=''}=req.query;
+        const {cpf='', page=1}=req.query;
 
+        const [total]= await connection('socios').count();//Tira o array
 
         const response= await connection('socios')
         .join('documentos','documentos.socio_id', '=', 'socios.id')
         .where('socios.cpf', 'like', `%${cpf}%`)
-        .select('documentos.id','socios.nome', 'socios.cpf', 'socios.endereco', 'socios.rg',
+        .select('documentos.id', 'socios.nome', 'socios.cpf', 'socios.endereco', 'socios.rg',
          'documentos.comprovante', 'socios.email', 'socios.id as socio_id', 'socios.confirmado', 
-         'documentos.rg as imagem_rg', 'documentos.cpf as imagem_cpf','socios.telefones');
+         'documentos.rg as imagem_rg', 'documentos.cpf as imagem_cpf','socios.telefones')
+        .orderBy('documentos.id', 'desc') //Bem o id do socio é codificado entao fica ruim para ordernar
+        .limit(10)
+        .offset((page-1)*10)
+
+        res.header('total-count', total['count(*)']);
 
         return res.status(200).send(response);
 

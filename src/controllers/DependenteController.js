@@ -80,7 +80,9 @@ module.exports={
 
     async index_dependentes(req,res){
 
-        const {cpf=''}= req.query;
+        const {cpf='', page=1}= req.query;
+
+        const [total]= await connection('dependentes').count();//Tira o array
 
         const response= await connection('dependentes')
         .join('documentos','documentos.dependente_id','=','dependentes.id')
@@ -89,7 +91,12 @@ module.exports={
         .where('socios.cpf','like',`%${cpf}%`)
         .select('documentos.id','dependentes.nome', 'dependentes.cpf', 'dependentes.endereco', 'dependentes.rg',
         'documentos.comprovante', 'dependentes.email', 'dependentes.id as dependente_id', 'dependentes.confirmado', 
-        'documentos.rg as imagem_rg', 'documentos.cpf as imagem_cpf','dependentes.telefones');
+        'documentos.rg as imagem_rg', 'documentos.cpf as imagem_cpf','dependentes.telefones')
+        .orderBy('documentos.id', 'desc') //Bem o id do socio é codificado entao fica ruim para ordernar
+        .limit(10)
+        .offset((page-1)*10)
+
+        res.header('total-count', total['count(*)']);
 
         return res.status(200).send(response)
     },
