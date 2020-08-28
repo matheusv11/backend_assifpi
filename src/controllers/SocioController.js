@@ -30,7 +30,6 @@ module.exports={
         const id= crypto.randomBytes(4).toString('hex');
         const hashed= await bcrypt.hash(senha, 10);
 
-
         await connection('socios').insert({
             id,
             nome,
@@ -48,7 +47,7 @@ module.exports={
             comprovante: req.files[2].filename,
             socio_id: id
         })
-        return res.status(200).send({message: 'Socio cadastro com sucesso'});
+        return res.status(200).send({message: 'Solicitacao de cadastro realizada com sucesso'});
         
     },
 

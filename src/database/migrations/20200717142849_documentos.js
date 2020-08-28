@@ -2,7 +2,10 @@
 exports.up = function(knex) {
   return knex.schema.createTable('documentos', table=>{
       table.increments();
-      table.string('rg').notNullable();
+      table.string('rg_frente');
+      table.string('rg_verso');
+      table.string('cnh');
+      table.string('comprovante_parentesco');
       table.string('cpf').notNullable();
       table.string('comprovante').notNullable();
       table.string('socio_id').references('id').inTable('socios')

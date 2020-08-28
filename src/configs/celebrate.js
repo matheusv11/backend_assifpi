@@ -7,7 +7,7 @@ module.exports={
            email: Joi.string().email().required(),
            senha: Joi.string().min(6).max(24).required(),
            cpf: Joi.string().length(11).pattern(/^[0-9]+$/).required(),
-           rg: Joi.string().length(9).pattern(/^[0-9]+$/).required(),
+           rg: Joi.allow(),
            endereco: Joi.string().max(64).required(),
            telefones: Joi.string().required(),
            files: Joi.allow()
@@ -29,7 +29,7 @@ module.exports={
             nome: Joi.string().max(100).required(),
             email: Joi.string().email().required(),
             cpf: Joi.string().length(11).pattern(/^[0-9]+$/).required(),
-            rg: Joi.string().length(9).pattern(/^[0-9]+$/).required(),
+            rg: Joi.allow(),
             endereco: Joi.string().max(64).required(),
             telefones: Joi.string().required(),
             files: Joi.allow()
