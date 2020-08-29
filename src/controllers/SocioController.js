@@ -15,7 +15,7 @@ module.exports={
     },
 
     async create(req,res){
-
+        console.log(req.files.length)
         if(!req.files[0] || !req.files[1] ||!req.files[2]){
             return res.status(401).send({message: 'Coloque algum arquivo'})
         }
@@ -41,10 +41,13 @@ module.exports={
             telefones
         })
 
+        
         await connection('documentos').insert({
-            rg: req.files[0].filename,
-            cpf: req.files[1].filename,
-            comprovante: req.files[2].filename,
+            rg_frente: req.files.length>3 ? req.files[0].filename : null,
+            rg_verso: req.files.length>3 ? req.files[1].filename : null,
+            cnh: req.files.length<4 ? req.files[0].filename : null,
+            cpf: req.files.length<4 ?  req.files[1].filename : req.files[2].filename, //2
+            comprovante: req.files.length<4 ? req.files[2].filename : req.files[3].filename, //3
             socio_id: id
         })
         return res.status(200).send({message: 'Solicitacao de cadastro realizada com sucesso'});

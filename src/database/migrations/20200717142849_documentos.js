@@ -6,8 +6,8 @@ exports.up = function(knex) {
       table.string('rg_verso');
       table.string('cnh');
       table.string('comprovante_parentesco');
-      table.string('cpf').notNullable();
-      table.string('comprovante').notNullable();
+      table.string('cpf');
+      table.string('comprovante');
       table.string('socio_id').references('id').inTable('socios')
       table.string('dependente_id').references('id').inTable('dependentes')
   })
