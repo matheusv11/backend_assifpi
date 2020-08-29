@@ -22,9 +22,13 @@ module.exports={
     async create(req,res){
         //Criar um dependente associado a um socio
 
-        if(!req.files[0] || !req.files[1] || !req.files[2]){
-            return res.status(401).send({message: 'Coloque algum arquivo'})
+        // if(!req.files[0] || !req.files[1] || !req.files[2]){
+        //     return res.status(401).send({message: 'Coloque algum arquivo'})
+        // }
+        if(!req.files[0]){
+            return res.status(401).send({message: 'Coloque algum arquivo'});
         }
+
         const socio_id= req.socio_id;
 
         const {nome,email,cpf,rg,endereco, telefones}=req.body
@@ -49,9 +53,10 @@ module.exports={
 
 
         await connection('documentos').insert({
-            rg: req.files[0].filename,
-            cpf: req.files[1].filename,
-            comprovante: req.files[2].filename,
+            // rg: req.files[0].filename,
+            comprovante_parentesco: req.files[0].filename,
+            // cpf: req.files[1].filename,
+            // comprovante: req.files[2].filename,
             dependente_id: id
         })
 
@@ -91,7 +96,7 @@ module.exports={
         .where('socios.cpf','like',`%${cpf}%`)
         .select('documentos.id','dependentes.nome', 'dependentes.cpf', 'dependentes.endereco', 'dependentes.rg',
         'documentos.comprovante', 'dependentes.email', 'dependentes.id as dependente_id', 'dependentes.confirmado', 
-        'documentos.rg as imagem_rg', 'documentos.cpf as imagem_cpf','dependentes.telefones')
+        'documentos.comprovante_parentesco', 'dependentes.telefones')
         .orderBy('documentos.id', 'desc') //Bem o id do socio é codificado entao fica ruim para ordernar
         .limit(10)
         .offset((page-1)*10)

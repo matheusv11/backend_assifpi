@@ -17,7 +17,7 @@ module.exports={
 
     limits:{
         fileSize: 1048576,//bytes 
-        files: 4 
+        files: 6 
     },
 
     fileFilter:(req,file,cb)=>{

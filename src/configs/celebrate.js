@@ -8,6 +8,8 @@ module.exports={
            senha: Joi.string().min(6).max(24).required(),
            cpf: Joi.string().length(11).pattern(/^[0-9]+$/).required(),
            rg: Joi.allow(),
+           cnh: Joi.allow(),
+           autorizacao_filiacao: Joi.allow(),
            endereco: Joi.string().max(64).required(),
            telefones: Joi.string().required(),
            files: Joi.allow()

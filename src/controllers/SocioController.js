@@ -15,9 +15,13 @@ module.exports={
     },
 
     async create(req,res){
-        console.log(req.files.length)
-        if(!req.files[0] || !req.files[1] ||!req.files[2]){
-            return res.status(401).send({message: 'Coloque algum arquivo'})
+        
+        // if(req.files.cnh){
+            // return res.status(401).send({message: 'Coloque algum arquivo'});
+        // }
+
+        if(!req.files.cpf_comprovante[0] || !req.files.cpf_comprovante[0]){
+            return res.status(401).send({message: 'Coloque algum arquivo'});
         }
 
         const {nome,email,senha, cpf, rg, endereco, telefones}= req.body;
@@ -41,13 +45,15 @@ module.exports={
             telefones
         })
 
-        
         await connection('documentos').insert({
-            rg_frente: req.files.length>3 ? req.files[0].filename : null,
-            rg_verso: req.files.length>3 ? req.files[1].filename : null,
-            cnh: req.files.length<4 ? req.files[0].filename : null,
-            cpf: req.files.length<4 ?  req.files[1].filename : req.files[2].filename, //2
-            comprovante: req.files.length<4 ? req.files[2].filename : req.files[3].filename, //3
+            // rg_frente: req.files.rg[0].filename || null,
+            rg_frente: req.files.rg ? req.files.rg[0].filename : null,
+            rg_verso: req.files.rg ? req.files.rg[1].filename : null,
+            cnh: req.files.cnh ? req.files.cnh[0].filename : null,
+            cpf: req.files.cpf_comprovante[0].filename,
+            comprovante: req.files.cpf_comprovante[1].filename,
+            autorizacao: req.files.autorizacao_filiacao ? req.files.autorizacao_filiacao[0].filename : null,
+            filiacao: req.files.autorizacao_filiacao ? req.files.autorizacao_filiacao[1].filename : null,
             socio_id: id
         })
         return res.status(200).send({message: 'Solicitacao de cadastro realizada com sucesso'});
@@ -91,7 +97,8 @@ module.exports={
         .where('socios.cpf', 'like', `%${cpf}%`)
         .select('documentos.id', 'socios.nome', 'socios.cpf', 'socios.endereco', 'socios.rg',
          'documentos.comprovante', 'socios.email', 'socios.id as socio_id', 'socios.confirmado', 
-         'documentos.rg as imagem_rg', 'documentos.cpf as imagem_cpf','socios.telefones')
+         'documentos.rg_frente', 'documentos.rg_verso', 'documentos.cpf as imagem_cpf',
+         'documentos.cnh', 'socios.telefones', 'documentos.autorizacao','documentos.filiacao')
         .orderBy('documentos.id', 'desc') //Bem o id do socio é codificado entao fica ruim para ordernar
         .limit(10)
         .offset((page-1)*10)
@@ -104,25 +111,28 @@ module.exports={
 
     async confirm_socio(req,res){
         const socio_id=req.params.id;
-
+        const presencial= req.query.presencial;
+        console.log(presencial);
         const response= await connection('socios').where('id', socio_id).select('cpf','confirmado').first();
 
         if(response.confirmado==1){
             return res.status(401).send({message: 'Este socio ja foi confirmado'});
         }
 
-        await connection('socios').where('id', socio_id).update('confirmado', true);
+        await connection('socios').where('id', socio_id).update('confirmado', true); //
 
-        const now = new Date();
-        const data_criacao= `${("0"+(now.getDate())).slice(-2)}/${("0"+(now.getMonth()+1)).slice(-2)}/${now.getFullYear()}`
-        // const vencimento = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));//Vence ainda hoje
-        // const data_vencimento= vencimento.getDate() + "/" + (vencimento.getMonth() + 1) + "/" + vencimento.getFullYear()
-
-        await connection('faturas').insert({
-            socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 0
-        })
-
-        log(`Confirmou o socio de id=${socio_id}`, req.adm_id);
+        if(presencial==="false"){
+            const now = new Date();
+            const data_criacao= `${("0"+(now.getDate())).slice(-2)}/${("0"+(now.getMonth()+1)).slice(-2)}/${now.getFullYear()}`
+            // const vencimento = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));//Vence ainda hoje
+            // const data_vencimento= vencimento.getDate() + "/" + (vencimento.getMonth() + 1) + "/" + vencimento.getFullYear()
+    
+            await connection('faturas').insert({
+                socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 0
+            })
+    
+            log(`Confirmou o socio de id=${socio_id}`, req.adm_id);
+        }
 
         return res.status(200).send({message: 'Socio confirmado com sucesso'});
     }
