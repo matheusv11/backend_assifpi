@@ -7,7 +7,8 @@ exports.up = function(knex) {
     table.string('local');
     table.string('titulo').notNullable();
     table.string('descricao').notNullable();
-    table.string('anexo')
+    table.string('imagens');
+    table.string('anexo');
 
   });
 };
