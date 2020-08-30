@@ -30,7 +30,10 @@ module.exports={
                 local,
                 titulo,
                 descricao,
-                anexo: req.files.anexo ? req.files.anexo[0].filename : null
+                anexo: req.files.anexo ? req.files.anexo[0].filename : null,
+                imagens: req.files.imagens ? req.files.imagens.map((img)=>{
+                    return img.filename
+                }) : null
         })
 
         log('Criou um evento', req.adm_id);

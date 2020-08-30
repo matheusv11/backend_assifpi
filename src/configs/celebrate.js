@@ -36,5 +36,15 @@ module.exports={
             telefones: Joi.string().required(),
             files: Joi.allow()
          }).options({abortEarly: false})
-    }
+    },
+
+    agenda:{
+        body: Joi.object().keys({
+            local: Joi.string().max(64).required(),
+            data: Joi.string().required(),//pattern(/^[0-9]+$/).
+            hora_inicio: Joi.string().required(),
+            hora_fim: Joi.string().required(),
+            
+        }).options({abortEarly: false})
+    },
 }

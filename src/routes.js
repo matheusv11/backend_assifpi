@@ -14,10 +14,11 @@ const ConvenioController= require('./controllers/ConvenioController');
 const LogController= require('./controllers/LogController');
 const FaturaController= require('./controllers/FaturaController');
 const GastoController= require('./controllers/GastoController');
+const AgendaController= require('./controllers/AgendaController');
 
 //Configs
 const jwt= require('./middlewares/jwt');
-const {socio, update_socio, dependente}= require('./configs/celebrate');
+const {socio, update_socio, dependente, agenda}= require('./configs/celebrate');
 const {celebrate}= require('celebrate')
 
 const multer= require('multer');
@@ -97,5 +98,12 @@ routes.post('/notifications', FaturaController.notifications);
 routes.get('/gastos', jwt.adm, GastoController.index);
 routes.post('/gastos', jwt.adm, GastoController.create);
 routes.delete('/gastos/:id', jwt.adm, GastoController.delete);
+
+//Agenda
+routes.get('/agenda', AgendaController.index); //falta jwt
+routes.get('/agenda_socio', jwt.adm, AgendaController.index_socios);
+routes.post('/agenda', jwt.socio, celebrate(agenda) , AgendaController.create);
+routes.delete('/agenda', jwt.adm, AgendaController.delete);
+routes.delete('agenda_socio', jwt.socio, AgendaController.remove_socio);
 
 module.exports= routes;
