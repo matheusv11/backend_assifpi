@@ -101,9 +101,9 @@ routes.delete('/gastos/:id', jwt.adm, GastoController.delete);
 
 //Agenda
 routes.get('/agenda', AgendaController.index); //falta jwt
-routes.get('/agenda_socio', jwt.adm, AgendaController.index_socios);
 routes.post('/agenda', jwt.socio, celebrate(agenda) , AgendaController.create);
-routes.delete('/agenda', jwt.adm, AgendaController.delete);
+routes.put('/agenda/:id', jwt.adm, AgendaController.update);
+routes.delete('/agenda/:id', jwt.adm, AgendaController.delete);
 routes.delete('agenda_socio', jwt.socio, AgendaController.remove_socio);
 
 module.exports= routes;

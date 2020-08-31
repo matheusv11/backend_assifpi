@@ -6,6 +6,8 @@ exports.up = function(knex) {
     table.date('data').notNullable();
     table.time('hora_inicio').notNullable();
     table.time('hora_fim').notNullable();
+    table.string('participantes').notNullable();
+    table.string('socio_id').references('id').inTable('socios');
     table.string('status').defaultTo('esperando');
   });
 };

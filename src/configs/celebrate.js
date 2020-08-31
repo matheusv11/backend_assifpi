@@ -41,6 +41,7 @@ module.exports={
     agenda:{
         body: Joi.object().keys({
             local: Joi.string().max(64).required(),
+            participantes: Joi.string().required(),
             data: Joi.string().required(),//pattern(/^[0-9]+$/).
             hora_inicio: Joi.string().required(),
             hora_fim: Joi.string().required(),
