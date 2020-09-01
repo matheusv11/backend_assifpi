@@ -26,6 +26,7 @@ const multer_config= require('./configs/multer');
 
 //rota estática
 routes.use('/files', express.static(path.resolve(__dirname, "./documents")));
+routes.use('/download', express.static(path.resolve(__dirname, "./documents/download")));
 
 //Auth
 routes.post('/auth_socio', AuthController.authSocio);
