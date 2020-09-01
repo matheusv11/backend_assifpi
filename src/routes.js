@@ -43,6 +43,7 @@ routes.put('/socio', jwt.socio, celebrate(update_socio), SocioController.update)
 routes.delete('/socio/:id', jwt.adm, SocioController.delete);
 routes.get('/index_socios', jwt.adm, SocioController.index_socios);
 routes.put('/confirm_socio/:id', jwt.adm, SocioController.confirm_socio);
+routes.put('/recover/:token', SocioController.recover);
 
 //Dependentes
 routes.get('/dependente', jwt.socio, DepedenteController.index);

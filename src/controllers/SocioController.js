@@ -2,6 +2,7 @@
 const connection= require('../database/connection');
 const bcrypt= require('bcrypt');
 const crypto= require('crypto');
+const sendmail= require('../utils/mailer');
 const log= require('../utils/log');
 
 module.exports={
@@ -77,7 +78,7 @@ module.exports={
     
     async delete(req,res){
         const socio_id= req.params.id;
-
+        
         await connection('socios').where('id', socio_id).delete();
         await connection('dependentes').where('socio_id', socio_id).delete();
 
@@ -112,8 +113,8 @@ module.exports={
     async confirm_socio(req,res){
         const socio_id=req.params.id;
         const presencial= req.query.presencial;
-        console.log(presencial);
-        const response= await connection('socios').where('id', socio_id).select('cpf','confirmado').first();
+
+        const response= await connection('socios').where('id', socio_id).select('cpf','confirmado','email').first();
 
         if(response.confirmado==1){
             return res.status(401).send({message: 'Este socio ja foi confirmado'});
@@ -130,10 +131,15 @@ module.exports={
             await connection('faturas').insert({
                 socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 0
             })
-    
+            
+            sendmail.confirm(response.email);
             log(`Confirmou o socio de id=${socio_id}`, req.adm_id);
         }
 
         return res.status(200).send({message: 'Socio confirmado com sucesso'});
+    },
+
+    async recover(req,res){
+        console.log(req.params.token);
     }
 }

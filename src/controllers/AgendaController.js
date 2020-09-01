@@ -27,7 +27,7 @@ module.exports={
 
     async update(req,res){
         const agenda_id= req.params.id;
-
+        
         await connection('agenda').where('id', agenda_id).update('status', 'confirmado');
 
         return res.status(200).send({message: 'Agenda confirmada com sucesso'});

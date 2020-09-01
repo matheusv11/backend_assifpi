@@ -1,6 +1,7 @@
 //Tabela de eventos
 const connection = require("../database/connection");
 const log= require('../utils/log');
+const sendmail= require('../utils/mailer');
 
 module.exports={
     
@@ -36,6 +37,12 @@ module.exports={
                 }) : null
         })
 
+        const emails= await connection('socios').where('confirmado',1).select('email');
+
+        sendmail.event(emails.map((dados)=>{
+            return dados.email
+        }));
+        
         log('Criou um evento', req.adm_id);
 
         return res.status(200).send({message: 'evento criado com sucesso'})
