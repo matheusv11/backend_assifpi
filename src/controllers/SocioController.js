@@ -16,13 +16,15 @@ module.exports={
     },
 
     async create(req,res){
-        
-        // if(req.files.cnh){
-            // return res.status(401).send({message: 'Coloque algum arquivo'});
-        // }
+        let compare= ''; 
+        const cnh= req.files.cnh;
+        const rg_file= req.files.rg;
+        cnh ? compare=cnh : compare=rg_file;
 
-        if(!req.files.cpf_comprovante[0] || !req.files.cpf_comprovante[0]){
-            return res.status(401).send({message: 'Coloque algum arquivo'});
+        // console.log(req.files.cpf_comprovante);//Falta as posicoes
+
+        if(!req.files.cpf_comprovante || !req.files.cpf_comprovante || !compare){
+            return res.status(401).send({message: 'Preencha todos arquivos necessários'});
         }
 
         const {nome,email,senha, cpf, rg, endereco, telefones}= req.body;
