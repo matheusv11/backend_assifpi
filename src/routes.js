@@ -18,7 +18,7 @@ const AgendaController= require('./controllers/AgendaController');
 
 //Configs
 const jwt= require('./middlewares/jwt');
-const {socio, update_socio, dependente, agenda}= require('./configs/celebrate');
+const {socio, update_socio, dependente, agenda, recover}= require('./configs/celebrate');
 const {celebrate}= require('celebrate')
 
 const multer= require('multer');
@@ -43,7 +43,9 @@ routes.put('/socio', jwt.socio, celebrate(update_socio), SocioController.update)
 routes.delete('/socio/:id', jwt.adm, SocioController.delete);
 routes.get('/index_socios', jwt.adm, SocioController.index_socios);
 routes.put('/confirm_socio/:id', jwt.adm, SocioController.confirm_socio);
-routes.put('/recover/:token', SocioController.recover);
+
+routes.post('/request', SocioController.request);
+routes.put('/recover/:token', jwt.recover, celebrate(recover), SocioController.recover);
 
 //Dependentes
 routes.get('/dependente', jwt.socio, DepedenteController.index);

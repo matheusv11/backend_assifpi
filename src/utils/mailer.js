@@ -44,11 +44,11 @@ module.exports= {
         const token= jwt.sign({email},'email',{
             expiresIn: '24h'
         })
-        
+
         transporter.sendMail({
             from:'mathsales360@gmail.com',
             to: email,
-            subject:'Confirmacao de socio',
+            subject:'Resetar senha',
             text:  "Email de solicitação de recuperação de senha",
             html: `Confirme seu email no seguinte link: http://localhost:3000/recuperar/${token}`
         }, error)

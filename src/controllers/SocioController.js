@@ -139,7 +139,29 @@ module.exports={
         return res.status(200).send({message: 'Socio confirmado com sucesso'});
     },
 
+    async request(req,res){
+        const {email}= req.body;
+
+        const verify= await connection('socios').where('email',email).select('email').first();
+
+        if(!verify){
+            return res.status(401).send({message: 'Este email não consta no sistema'});
+        }
+        sendmail.recover(email);
+
+        return res.status(200).send({message: 'Email de recuperação enviado com sucesso'});
+    },
+
     async recover(req,res){
-        console.log(req.params.token);
+        const email= req.recover_email;
+        const {senha}= req.body;
+        const hashed= await bcrypt.hash(senha,10);
+
+        await connection('socios').where('email', email).update('senha', hashed);
+
+        return res.status(200).send({message: 'Senha atualizada com sucesso'});
+        // console.log(req.params.token);
+        //Ou authorization;
+        //Poderia ter um catch
     }
 }

@@ -48,4 +48,10 @@ module.exports={
             
         }).options({abortEarly: false})
     },
+
+    recover:{
+        body: Joi.object().keys({
+            senha: Joi.string().min(6).max(24).required()
+        }).options({abortEarly: false})
+    },
 }
