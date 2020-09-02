@@ -35,7 +35,7 @@ routes.post('/auth_adm', AuthController.authAdm);
 //Socio
 routes.get('/socio', jwt.socio, SocioController.index);
 routes.post('/socio',multer(multer_config).fields([
-    {name:'rg',maxCount:2},{name:'cnh',maxCount:1},{name:'cpf_comprovante',maxCount:2},{name:'autorizacao_filiacao',maxCount:2}
+    {name:'rg_file',maxCount:2},{name:'cnh',maxCount:1},{name:'cpf_comprovante',maxCount:2},{name:'autorizacao_filiacao',maxCount:2}
 ]), celebrate(socio), SocioController.create);
 
 routes.put('/socio', jwt.socio, celebrate(update_socio), SocioController.update);

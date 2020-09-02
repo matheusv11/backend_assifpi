@@ -1,19 +1,31 @@
 const {Joi}= require('celebrate');
 
+const mensagens={
+    "string.base": `{#key} precisar ser um 'texto'`,
+    "string.empty": `{#key} não pode ser vazio`,
+    "string.min": `{#key} deve ter no minimo {#limit} caracteres`,
+    "string.max": `{#key} deve ter no maximo {#limit} caracteres`,
+    "any.required": `preencha o campo {#key}`,
+    "string.length": `{#key} precisar ter {#limit} caracteres`,
+    "string.pattern.base": `{#key} precisa conter somente números`,
+    "string.email": `Insira um email válido no campo {#key}`
+}
+
 module.exports={
     socio:{
         body: Joi.object().keys({
-           nome: Joi.string().max(100).required().error(new Error('Nome deve ser preenchido')),
-           email: Joi.string().email().required().error(new Error('Insira um email valido')),
-           senha: Joi.string().min(6).max(24).required().error(new Error('A senha deve conter entre 6 e 24 caracteres')),
-           cpf: Joi.string().length(11).pattern(/^[0-9]+$/).required().error(new Error('CPF deve conter 11 digitos')),
+           nome: Joi.string().max(100).required(),
+           email: Joi.string().email().required(),
+           senha: Joi.string().min(6).max(24).required(),
+           cpf: Joi.string().length(11).pattern(/^[0-9]+$/).required(),
            rg: Joi.allow(), //documento
+           rg_file: Joi.allow(),
            cnh: Joi.allow(), //documento
            autorizacao_filiacao: Joi.allow(), //documento
            cpf_comprovante: Joi.allow(), //documento
-           endereco: Joi.string().max(64).required().error(new Error('Insira seu endereço')),
-           telefones: Joi.string().required().error(new Error('Insira seu(s) telefone(s)')),
-        }).options({abortEarly: false})
+           endereco: Joi.string().max(64).required(),
+           telefones: Joi.string().required(),
+        }).options({abortEarly: false}).messages(mensagens)
 
     },
 
@@ -23,7 +35,7 @@ module.exports={
             telefones: Joi.string().required(),//pattern(/^[0-9]+$/).
             senha: Joi.string().min(6).max(24).required(),
             
-        }).options({abortEarly: false})
+        }).options({abortEarly: false}).messages(mensagens)
     },
 
     dependente:{
@@ -35,7 +47,7 @@ module.exports={
             endereco: Joi.string().max(64).required(),
             telefones: Joi.string().required(),
             files: Joi.allow()
-         }).options({abortEarly: false})
+         }).options({abortEarly: false}).messages(mensagens)
     },
 
     agenda:{
@@ -46,12 +58,12 @@ module.exports={
             hora_inicio: Joi.string().required(),
             hora_fim: Joi.string().required(),
             
-        }).options({abortEarly: false})
+        }).options({abortEarly: false}).messages(mensagens)
     },
 
     recover:{
         body: Joi.object().keys({
             senha: Joi.string().min(6).max(24).required()
-        }).options({abortEarly: false})
+        }).options({abortEarly: false}).messages(mensagens)
     },
 }

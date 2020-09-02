@@ -18,7 +18,7 @@ module.exports={
     async create(req,res){
         let compare= ''; 
         const cnh= req.files.cnh;
-        const rg_file= req.files.rg;
+        const rg_file= req.files.rg_file;
         cnh ? compare=cnh : compare=rg_file;
 
         // console.log(req.files.cpf_comprovante);//Falta as posicoes
@@ -50,8 +50,8 @@ module.exports={
 
         await connection('documentos').insert({
             // rg_frente: req.files.rg[0].filename || null,
-            rg_frente: req.files.rg ? req.files.rg[0].filename : null,
-            rg_verso: req.files.rg ? req.files.rg[1].filename : null,
+            rg_frente: req.files.rg_file ? req.files.rg_file[0].filename : null,
+            rg_verso: req.files.rg_file ? req.files.rg_file[1].filename : null,
             cnh: req.files.cnh ? req.files.cnh[0].filename : null,
             cpf: req.files.cpf_comprovante[0].filename,
             comprovante: req.files.cpf_comprovante[1].filename,
