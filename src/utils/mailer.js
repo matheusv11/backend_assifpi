@@ -22,7 +22,7 @@ module.exports= {
     async event(emails){
         // console.log(emails);
         transporter.sendMail({
-            from:'mathsales360@gmail.com',
+            from:'Matheus Sales <mathsales360@gmail.com>',
             to: emails,
             subject:'Evento',
             text:  "Um novo evento foi adicionado confira no link",
@@ -31,7 +31,7 @@ module.exports= {
 
     async confirm(email){
         transporter.sendMail({
-            from:'mathsales360@gmail.com',
+            from:'Matheus Sales <mathsales360@gmail.com>',
             to: email,
             subject:'Confirmacao de socio',
             text:  "Voce foi confirmado no sistema",
@@ -46,7 +46,7 @@ module.exports= {
         })
 
         transporter.sendMail({
-            from:'mathsales360@gmail.com',
+            from:'Matheus Sales <mathsales360@gmail.com>',
             to: email,
             subject:'Resetar senha',
             text:  "Email de solicitação de recuperação de senha",

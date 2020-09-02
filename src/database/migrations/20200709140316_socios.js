@@ -10,8 +10,8 @@ exports.up = function(knex) {
     table.string('endereco').notNullable();
     table.string('telefones').notNullable();
     table.boolean('confirmado').defaultTo(false);
-    // table.boolean('presencial').defaultTo(false);
-
+    table.string('pagamento').defaultTo('mercadopago');
+    
   });
 
 };

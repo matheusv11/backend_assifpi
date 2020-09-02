@@ -100,7 +100,7 @@ module.exports={
         .where('socios.cpf', 'like', `%${cpf}%`)
         .select('documentos.id', 'socios.nome', 'socios.cpf', 'socios.endereco', 'socios.rg',
          'documentos.comprovante', 'socios.email', 'socios.id as socio_id', 'socios.confirmado', 
-         'documentos.rg_frente', 'documentos.rg_verso', 'documentos.cpf as imagem_cpf',
+         'documentos.rg_frente', 'documentos.rg_verso', 'documentos.cpf as imagem_cpf', 'socios.pagamento',
          'documentos.cnh', 'socios.telefones', 'documentos.autorizacao','documentos.filiacao')
         .orderBy('documentos.id', 'desc') //Bem o id do socio é codificado entao fica ruim para ordernar
         .limit(10)
@@ -115,28 +115,27 @@ module.exports={
     async confirm_socio(req,res){
         const socio_id=req.params.id;
         const presencial= req.query.presencial;
-
         const response= await connection('socios').where('id', socio_id).select('cpf','confirmado','email').first();
 
         if(response.confirmado==1){
             return res.status(401).send({message: 'Este socio ja foi confirmado'});
         }
 
-        await connection('socios').where('id', socio_id).update('confirmado', true); //
+        await connection('socios').where('id', socio_id).update({
+            confirmado: true, pagamento: presencial
+        }); //
 
-        if(presencial==="false"){
+        if(presencial==="mercadopago"){
             const now = new Date();
             const data_criacao= `${("0"+(now.getDate())).slice(-2)}/${("0"+(now.getMonth()+1)).slice(-2)}/${now.getFullYear()}`
-            // const vencimento = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));//Vence ainda hoje
-            // const data_vencimento= vencimento.getDate() + "/" + (vencimento.getMonth() + 1) + "/" + vencimento.getFullYear()
     
             await connection('faturas').insert({
                 socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 0
             })
             
-            sendmail.confirm(response.email);
-            log(`Confirmou o socio de id=${socio_id}`, req.adm_id);
         }
+        sendmail.confirm(response.email);
+        log(`Confirmou o socio de id=${socio_id}`, req.adm_id);
 
         return res.status(200).send({message: 'Socio confirmado com sucesso'});
     },

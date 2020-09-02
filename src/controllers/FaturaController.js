@@ -148,6 +148,11 @@ module.exports={
                 compra_id: dados.data.id, valor: dados.data.transaction_details.net_received_amount//Valor com os 5%
             })
 
+            // await connection('faturas').insert({
+            //     socio_id: parts[0], cpf: dados.cpf, status: 'pending', data_criacao,
+            //     data_vencimento, renovada: 0,
+            // })
+
             return res.status(200).send();
 
         }).catch((err)=>{
