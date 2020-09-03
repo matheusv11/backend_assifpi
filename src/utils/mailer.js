@@ -38,6 +38,42 @@ module.exports= {
         }, error)
     },
 
+    async carteira(email){
+        transporter.sendMail({
+            from:'Matheus Sales <mathsales360@gmail.com>',
+            to: email,
+            subject:'Carteira pronta!',
+            text:  "Sua carteira ASSIFPI esta pronta!",
+        }, error)
+    },
+
+
+    async agenda_confirmado(email){
+        transporter.sendMail({
+            from:'Matheus Sales <mathsales360@gmail.com>',
+            to: email,
+            subject:'Solicitação de espaço',
+            text:  "Sua Solicitação de espaço foi aceita, aproveite bem!",
+        }, error)
+    },
+
+    async agenda_recusado(email){
+        transporter.sendMail({
+            from:'Matheus Sales <mathsales360@gmail.com>',
+            to: email,
+            subject:'Solicitação de espaço',
+            text:  "Sua Solicitação de espaço foi recusada!",
+        }, error)
+    },
+
+    // async carteira_dependente(email){
+    //     transporter.sendMail({
+    //         from:'Matheus Sales <mathsales360@gmail.com>',
+    //         to: email,
+    //         subject:'Carteira pronta!',
+    //         text:  "Sua carteira ASSIFPI esta pronta!",
+    //     }, error)
+    // },
 
     async recover(email){
 

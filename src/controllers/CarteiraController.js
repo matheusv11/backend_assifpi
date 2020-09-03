@@ -1,5 +1,6 @@
 const connection= require('../database/connection');
 const log= require('../utils/log');
+const sendmail= require('../utils/mailer');
 
 module.exports={
     async index(req,res){
@@ -92,9 +93,12 @@ module.exports={
 
     async change_carteira_socio(req,res){
         const socio_id= req.params.id;
+        const {email}= await connection('socios').where('id', socio_id).select('email').first();
 
         await connection('carteiras').where('socio_id', socio_id).update({status:'confeccionada'})
         
+        sendmail.carteira(email);
+
         log(`Alterou os status da carteira do socio de id=${socio_id}`, req.adm_id)
         
         return res.status(200).send({message: 'Confirmado a confeccao da carteira do socio'});
@@ -102,9 +106,11 @@ module.exports={
 
     async change_carteira_dependente(req,res){
         const dependente_id= req.params.id;
+        const {email}= await connection('dependentes').where('id',dependente_id).select('email').first()
 
         await connection('carteiras').where('dependente_id', dependente_id).update({status:'confeccionada'})
         
+        sendmail.carteira(email);
         log(`Alterou os status da carteira do dependente de id=${dependente_id}`, req.adm_id)
 
         return res.status(200).send({message: 'Confirmado a confeccao da carteira do dependente'});
