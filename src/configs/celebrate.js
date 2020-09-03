@@ -17,7 +17,8 @@ module.exports={
            nome: Joi.string().max(100).required(),
            email: Joi.string().email().required(),
            senha: Joi.string().min(6).max(24).required(),
-           cpf: Joi.string().length(11).pattern(/^[0-9]+$/).required(),
+        //    cpf: Joi.string().length(13).pattern(/^[0-9]+$/).required(),
+           cpf: Joi.string().length(14).required(),
            rg: Joi.allow(), //documento
            rg_file: Joi.allow(),
            cnh: Joi.allow(), //documento

@@ -21,9 +21,7 @@ module.exports={
         const rg_file= req.files.rg_file;
         cnh ? compare=cnh : compare=rg_file;
 
-        // console.log(req.files.cpf_comprovante);//Falta as posicoes
-
-        if(!req.files.cpf_comprovante || !req.files.cpf_comprovante || !compare){
+        if(!req.files.cpf_comprovante || !req.files.cpf_comprovante || !compare || compare[0].fieldname==="rg_file" && !compare[1]){
             return res.status(401).send({message: 'Preencha todos arquivos necessários'});
         }
 
