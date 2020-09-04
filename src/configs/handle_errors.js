@@ -1,5 +1,21 @@
+const fs= require('fs');
+const path= require('path');
+
 module.exports= (err, req,res,next)=>{
     if(err){
+        
+        if(req.files){
+            const Objeto= Object.values(req.files)
+            Objeto.map((dados,index)=>{
+                // console.log('Index: ', index)
+                // console.log(dados[index])
+                dados.map((files)=>{
+                    fs.unlinkSync(path.resolve(__dirname, `../documents/${files.filename}`))
+                })
+
+            })
+        }
+        
         return res.status(400).send({message: err.message})
     }
 }
