@@ -98,6 +98,7 @@ Funcionalidades:
 	4.Mascaras para inputs
 	5.Anexar balancete(talvez nao)
 	6.Arrumar portugues
+	7.Colocar avisos
 
 	Eventos/Convênios:
 	4.Notificação por email novos eventos
