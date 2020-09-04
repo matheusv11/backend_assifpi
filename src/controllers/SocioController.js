@@ -15,21 +15,23 @@ module.exports={
         
     },
 
-    async create(req,res){
+    async create(req,res,next){
         let compare= ''; 
         const cnh= req.files.cnh;
         const rg_file= req.files.rg_file;
         cnh ? compare=cnh : compare=rg_file;
 
-        if(!req.files.cpf_comprovante || !req.files.cpf_comprovante || !compare || compare[0].fieldname==="rg_file" && !compare[1]){
-            return res.status(401).send({message: 'Preencha todos arquivos necessários'});
+        if(!req.files.cpf_comprovante || !req.files.cpf_comprovante[1] || !compare || compare[0].fieldname==="rg_file" && !compare[1] || req.files.autorizacao_filiacao && !req.files.autorizacao_filiacao[1]){
+            return next({message:'Preencha todos arquivos necessários'})
+            // return res.status(401).send({message: 'Preencha todos arquivos necessários'});
         }
 
         const {nome,email,senha, cpf, rg, endereco, telefones}= req.body;
-        const response= await connection('socios').where('email', email).select('email').first();
+        const response= await connection('socios').where('email', email).orWhere('cpf', cpf).select('email','cpf').first();
 
         if(response){
-            return res.status(401).send({message: 'Usuario ja existente'});
+            // return res.status(401).send({message: 'Usuario ja existente'});
+            return next({message:'Usuário já existente'})
         }
         
         const id= crypto.randomBytes(4).toString('hex');

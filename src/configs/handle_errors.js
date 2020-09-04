@@ -3,7 +3,6 @@ const path= require('path');
 
 module.exports= (err, req,res,next)=>{
     if(err){
-        
         if(req.files){
             const Objeto= Object.values(req.files)
             Objeto.map((dados,index)=>{
