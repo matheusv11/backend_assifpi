@@ -120,6 +120,14 @@ Funcionalidades:
 	2.juros para pagamentos atrasados
 	3.DEBITO AUTOMATICO
 
+	---
+	->MASCARA INPUT NUMERO DEPENDENTE
+	->terminar home e sobre 
+	->pagamento antecipado
+	->juros
+	->criar footer padrao
+	----
+
 	Finished:
 	
 	1.confirmar ação atraves do alert
