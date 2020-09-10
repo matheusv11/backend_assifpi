@@ -6,12 +6,12 @@ exports.up = function(knex) {
         table.string('compra_id');
         table.string('cpf');
         table.string('status');
-        table.string('boleto')
-        table.date('data_criacao')
-        table.date('data_vencimento')
-        table.string('renovada')
-        table.string('valor')
-        table.string('recebido')
+        table.string('boleto');
+        table.date('data_criacao');
+        table.date('data_vencimento');
+        table.boolean('renovada');
+        table.string('valor');
+        table.string('recebido');
     })
   };
   

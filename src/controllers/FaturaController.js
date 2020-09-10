@@ -146,11 +146,19 @@ module.exports={
             await connection('faturas').where('socio_id', parts[0]).andWhere('id', parts[1]).update({
                 status: dados.data.status, boleto: dados.data.transaction_details.external_resource_url,
                 compra_id: dados.data.id, valor: dados.data.transaction_details.net_received_amount//Valor com os 5%
-            })
+            });
+            
+            //Fazer if status for igual a aceitado
+            //Se vier mais de uma notificacao ai da ruim pois ele vai cair na fatura antecipada novamente
+            let nova_fatura= await connection('faturas').where('socio_id', parts[0]).andWhere('id', parts[1]).select('*');
+            let us_data= nova_fatura.data_vencimento.split('/').reverse().join('-');
 
+            let data_criacao= new Date().toISOString().substr(0,10).split('-').reverse().join('/');
+            let vencimento = new Date(new Date(us_data).getTime() + (30 * 24 * 60 * 60 * 1000))//.toIso
+            let data_vencimento= vencimento.toISOString().substr(0,10).split('-').reverse().join('/')
             // await connection('faturas').insert({
-            //     socio_id: parts[0], cpf: dados.cpf, status: 'pending', data_criacao,
-            //     data_vencimento, renovada: 0,
+                // socio_id: parts[0], cpf: dados.cpf, status: 'pending', data_criacao,
+                // data_vencimento, renovada: 0,
             // })
 
             return res.status(200).send();

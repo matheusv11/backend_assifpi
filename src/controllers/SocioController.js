@@ -134,7 +134,7 @@ module.exports={
             })
             
         }
-        sendmail.confirm(response.email);
+        // sendmail.confirm(response.email);
         log(`Confirmou o socio de id=${socio_id}`, req.adm_id);
 
         return res.status(200).send({message: 'Socio confirmado com sucesso'});
