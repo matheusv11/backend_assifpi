@@ -10,7 +10,7 @@ module.exports={
         const response= await connection('faturas')
         .join('socios', 'socios.id', '=', 'faturas.socio_id')
         .where('faturas.status', 'pending').andWhere('faturas.renovada', 1).select('socios.nome','socios.cpf').distinct();//Evitar dados repetido
-        //Condicoes pra recusada ainda
+        //Condicoes pra recusada ainda //Where in 
         return res.status(200).send(response);
     },
 
@@ -104,13 +104,24 @@ module.exports={
         const socio_id= req.socio_id;
         const id= req.params.id;//Id da fatura
 
-        mercadopago.configure({access_token: test_token});
+        const response= await connection('faturas').where('socio_id', socio_id).andWhere('id', id).select('*').first()
 
+        console.log(response)
+        const now = new Date();
+        const data_vencimento = new Date(response.data_vencimento.split('/').reverse().join('-'));
+
+        const timeDiff = Math.abs(data_vencimento.getTime() - now.getTime());
+        const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+        //Verificar para vencimento não ultrapssar
+        console.log(diffDays);
+
+        mercadopago.configure({access_token: test_token});
+        
         const preference = {
         items: [
             {
             title: 'Produto de teste em producao',
-            unit_price: 5,
+            unit_price: diffDays>=7 ? 10 : 5,
             quantity: 1,
             }
         ],
@@ -148,19 +159,6 @@ module.exports={
                 compra_id: dados.data.id, valor: dados.data.transaction_details.net_received_amount//Valor com os 5%
             });
             
-            //Fazer if status for igual a aceitado
-            //Se vier mais de uma notificacao ai da ruim pois ele vai cair na fatura antecipada novamente
-            let nova_fatura= await connection('faturas').where('socio_id', parts[0]).andWhere('id', parts[1]).select('*');
-            let us_data= nova_fatura.data_vencimento.split('/').reverse().join('-');
-
-            let data_criacao= new Date().toISOString().substr(0,10).split('-').reverse().join('/');
-            let vencimento = new Date(new Date(us_data).getTime() + (30 * 24 * 60 * 60 * 1000))//.toIso
-            let data_vencimento= vencimento.toISOString().substr(0,10).split('-').reverse().join('/')
-            // await connection('faturas').insert({
-                // socio_id: parts[0], cpf: dados.cpf, status: 'pending', data_criacao,
-                // data_vencimento, renovada: 0,
-            // })
-
             return res.status(200).send();
 
         }).catch((err)=>{
@@ -169,5 +167,39 @@ module.exports={
 
         return res.status(200).send();
 
+    },
+
+    async personal_fatura(req,res){
+        // const socio_id= req.socio_id;
+        const id= req.params.id;//Id da fatura
+
+        mercadopago.configure({access_token: test_token});
+
+        const preference = {
+        items: [
+            {
+            title: 'Produto de teste em producao',
+            unit_price: 5,
+            quantity: 1,
+            }
+        ],
+
+        external_reference: `${socio_id}-${id}`,
+        back_urls: {
+            success: "https://frontend-assifpi.herokuapp.com/perfil",
+            failure: "https://frontend-assifpi.herokuapp.com/perfil",
+            pending: "https://frontend-assifpi.herokuapp.com/perfil"
+        },
+        auto_return: "approved",
+        notification_url: "https://backend-assifpi.herokuapp.com/notifications", //Update
+
+        };
+
+        mercadopago.preferences.create(preference)
+        .then(function(response){
+            return res.json(response)
+        }).catch(function(error){
+            console.log(error);
+        });
     }
 }
