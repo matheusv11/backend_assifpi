@@ -106,14 +106,13 @@ module.exports={
 
         const response= await connection('faturas').where('socio_id', socio_id).andWhere('id', id).select('*').first()
 
-        console.log(response)
+        // console.log(response)
         const now = new Date();
         const data_vencimento = new Date(response.data_vencimento.split('/').reverse().join('-'));
 
-        const timeDiff = Math.abs(data_vencimento.getTime() - now.getTime());
+        const timeDiff = now.getTime() - data_vencimento.getTime() 
         const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
-        //Verificar para vencimento não ultrapssar
-        console.log(diffDays);
+        // console.log(diffDays);
 
         mercadopago.configure({access_token: test_token});
         
