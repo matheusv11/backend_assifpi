@@ -21,7 +21,7 @@ module.exports={
         }
 
         const token= jwt.sign({id: response.id}, 'secret', {
-            expiresIn: '180min'
+            expiresIn: '240min'
         });
 
         return res.status(200).send({token});
@@ -38,7 +38,7 @@ module.exports={
         }
 
         const token=jwt.sign({id:response.id},'adm',{
-            expiresIn:'180min'
+            expiresIn:'240min'
         });
 
         log('Entrou no sistema', response.id);
