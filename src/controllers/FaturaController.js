@@ -151,7 +151,7 @@ module.exports={
         if(req.body.resource){
             return res.status(200).send()
         }
-        
+
         axios.get(`https://api.mercadopago.com/v1/payments/${req.body.data.id}?access_token=${test_token}`).then(async(dados)=>{
             console.log(dados.data)
             let external= dados.data.external_reference
