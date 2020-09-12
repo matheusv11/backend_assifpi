@@ -19,23 +19,23 @@ module.exports={
         return res.status(200).send(response);
     },
 
-    async create(req,res){
+    async create(req,res,next){
         //Criar um dependente associado a um socio
 
         // if(!req.files[0] || !req.files[1] || !req.files[2]){
         //     return res.status(401).send({message: 'Coloque algum arquivo'})
         // }
-        if(!req.files[0]){
-            return res.status(401).send({message: 'Coloque algum arquivo'});
+        if(!req.files.comprovante){
+            return next({message:'Preencha todos arquivos necessários'})
         }
 
         const socio_id= req.socio_id;
 
         const {nome,email,cpf,rg,endereco, telefones}=req.body
-        const response= await connection('dependentes').where('email', email).select('email').first();
+        const response= await connection('dependentes').where('email', email).orWhere('cpf', cpf).select('email','cpf').first();
 
         if(response){
-            return res.status(401).send({message: 'Depedente já cadastrado'});
+            return next({message:'Depedente já cadastrado'})
         }
 
         const id= crypto.randomBytes(4).toString('hex');
@@ -51,10 +51,9 @@ module.exports={
             socio_id
         })
 
-
         await connection('documentos').insert({
             // rg: req.files[0].filename,
-            comprovante_parentesco: req.files[0].filename,
+            comprovante_parentesco: req.files.comprovante[0].filename,
             // cpf: req.files[1].filename,
             // comprovante: req.files[2].filename,
             dependente_id: id

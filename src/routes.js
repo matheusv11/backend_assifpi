@@ -49,7 +49,7 @@ routes.put('/recover/:token', jwt.recover, celebrate(recover), SocioController.r
 
 //Dependentes
 routes.get('/dependente', jwt.socio, DepedenteController.index);
-routes.post('/dependente', jwt.socio, multer(multer_config).array('files'), celebrate(dependente), DepedenteController.create);
+routes.post('/dependente', jwt.socio, multer(multer_config).fields([{name: 'comprovante', maxCount:1}]), celebrate(dependente), DepedenteController.create);
 routes.delete('/dependente/:id', jwt.socio, DepedenteController.delete);
 
 routes.post('/confirm_dependente/:id', jwt.adm, DepedenteController.confirm_dependente);

@@ -43,11 +43,12 @@ module.exports={
         body: Joi.object().keys({
             nome: Joi.string().max(100).required(),
             email: Joi.string().email().required(),
-            cpf: Joi.string().length(11).pattern(/^[0-9]+$/).required(),
+            // cpf: Joi.string().length(11).pattern(/^[0-9]+$/).required(),
+            cpf: Joi.string().length(14).required(),
             rg: Joi.allow(),
             endereco: Joi.string().max(64).required(),
             telefones: Joi.string().required(),
-            files: Joi.allow()
+            comprovante: Joi.allow()
          }).options({abortEarly: false}).messages(mensagens)
     },
 
