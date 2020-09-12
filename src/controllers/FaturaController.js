@@ -132,7 +132,7 @@ module.exports={
             pending: "https://frontend-assifpi.herokuapp.com/perfil"
         },
         auto_return: "approved",
-        notification_url: "https://backend-assifpi.herokuapp.com/notifications?source_news=webhooks", //Update
+        notification_url: "https://backend-assifpi.herokuapp.com/notifications", //Update
 
         };
 
@@ -148,8 +148,12 @@ module.exports={
     async notifications(req,res){
         console.log(req.body)
 
+        if(req.body.resource){
+            return res.status(200).send()
+        }
+        
         axios.get(`https://api.mercadopago.com/v1/payments/${req.body.data.id}?access_token=${test_token}`).then(async(dados)=>{
-            // console.log(dados.data)
+            console.log(dados.data)
             let external= dados.data.external_reference
             let parts= external.split('-')
 
@@ -200,7 +204,7 @@ module.exports={
             pending: "https://frontend-assifpi.herokuapp.com"
         },
         auto_return: "approved",
-        notification_url: "https://backend-assifpi.herokuapp.com/notifications?source_news=webhooks", //Update
+        notification_url: "https://backend-assifpi.herokuapp.com/notifications", //Update
 
         };
 
