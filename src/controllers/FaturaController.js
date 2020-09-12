@@ -132,7 +132,7 @@ module.exports={
             pending: "https://frontend-assifpi.herokuapp.com/perfil"
         },
         auto_return: "approved",
-        notification_url: "https://backend-assifpi.herokuapp.com/notifications", //Update
+        notification_url: "https://backend-assifpi.herokuapp.com/notifications?source_news=webhooks", //Update
 
         };
 
@@ -200,7 +200,7 @@ module.exports={
             pending: "https://frontend-assifpi.herokuapp.com"
         },
         auto_return: "approved",
-        notification_url: "https://backend-assifpi.herokuapp.com/notifications", //Update
+        notification_url: "https://backend-assifpi.herokuapp.com/notifications?source_news=webhooks", //Update
 
         };
 
