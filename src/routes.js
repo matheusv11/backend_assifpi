@@ -97,6 +97,7 @@ routes.get('/index_socio_fatura', jwt.socio, FaturaController.index_socio_fatura
 routes.get('/index_pagamentos', jwt.adm, FaturaController.index_pagamentos);
 routes.post('/faturas/:id', jwt.socio, FaturaController.create);
 routes.post('/notifications', FaturaController.notifications);
+routes.post('/personal_fatura/:id', jwt.adm, FaturaController.personal_fatura);
 
 //Gastos
 routes.get('/gastos', jwt.adm, GastoController.index);

@@ -153,6 +153,15 @@ module.exports={
             let external= dados.data.external_reference
             let parts= external.split('-')
 
+            if(dados.data.status=="approved" && parts[1]=="payall"){
+                await connection('faturas').where('socio_id', parts[0]).update({
+                    status: dados.data.status, boleto: dados.data.transaction_details.external_resource_url,
+                    compra_id: dados.data.id, valor: dados.data.transaction_details.net_received_amount
+                })
+
+                return res.status(200).send();
+            }
+            
             await connection('faturas').where('socio_id', parts[0]).andWhere('id', parts[1]).update({
                 status: dados.data.status, boleto: dados.data.transaction_details.external_resource_url,
                 compra_id: dados.data.id, valor: dados.data.transaction_details.net_received_amount//Valor com os 5%
@@ -169,8 +178,9 @@ module.exports={
     },
 
     async personal_fatura(req,res){
-        // const socio_id= req.socio_id;
-        const id= req.params.id;//Id da fatura
+        const socio_id= req.params.id;
+        const valor= req.body.valor;
+        // const id= req.params.id;//Id da fatura
 
         mercadopago.configure({access_token: test_token});
 
@@ -178,16 +188,16 @@ module.exports={
         items: [
             {
             title: 'Produto de teste em producao',
-            unit_price: 5,
+            unit_price: valor,
             quantity: 1,
             }
         ],
 
-        external_reference: `${socio_id}-${id}`,
+        external_reference: `${socio_id}-payall`,
         back_urls: {
-            success: "https://frontend-assifpi.herokuapp.com/perfil",
-            failure: "https://frontend-assifpi.herokuapp.com/perfil",
-            pending: "https://frontend-assifpi.herokuapp.com/perfil"
+            success: "https://frontend-assifpi.herokuapp.com",
+            failure: "https://frontend-assifpi.herokuapp.com",
+            pending: "https://frontend-assifpi.herokuapp.com"
         },
         auto_return: "approved",
         notification_url: "https://backend-assifpi.herokuapp.com/notifications", //Update

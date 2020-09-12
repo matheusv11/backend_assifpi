@@ -17,7 +17,7 @@ module.exports=async ()=>{
         let vencimento= new Date(data.getTime() + (30 * 24 * 60 * 60 * 1000));
         let data_vencimento= vencimento.toISOString().substr(0,10).split('-').reverse().join('/');
 
-        if(now>=data && dados.renovada==0 || dados.status=="accepted" && dados.renovada==0){ //Poderia colocar tambem questao dos status
+        if(now>=data && dados.renovada==0 || dados.status=="approved" && dados.renovada==0){ //Poderia colocar tambem questao dos status
             await connection('faturas').where('id', dados.id).update({renovada: 1})//Data de vencimento e id
 
             await connection('faturas').insert({
