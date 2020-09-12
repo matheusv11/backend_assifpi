@@ -6,7 +6,7 @@ module.exports={
         const token= req.headers.authorization.split(' ')[1];
 
         try{
-            const decode= jwt.verify(token, 'secret');
+            const decode= jwt.verify(token, process.env.APP_JWT_SOCIO);
             req.socio_id= decode.id;
             next();
         }
@@ -19,7 +19,7 @@ module.exports={
         const token=req.headers.authorization.split(' ')[1];
 
         try{
-            const decode=jwt.verify(token, 'adm');
+            const decode=jwt.verify(token, process.env.APP_JWT_ADM);
             req.adm_id=decode.id
             next();
         }

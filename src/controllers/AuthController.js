@@ -11,8 +11,7 @@ module.exports={
 
         const response= await connection('socios').where('email', email).select('id', 'senha', 'confirmado').first();
         
-
-        if(!response || ! await bcrypt.compare(senha, response.senha) ){
+        if(!response || !await bcrypt.compare(senha, response.senha) ){
             return res.status(401).send({message: 'Email ou senha incorretos'});
         }
 
@@ -20,7 +19,7 @@ module.exports={
             return res.status(401).send({message: 'Voce precisa ser autorizado para entrar no sistema'})
         }
 
-        const token= jwt.sign({id: response.id}, 'secret', {
+        const token= jwt.sign({id: response.id}, process.env.APP_JWT_SOCIO, {
             expiresIn: '240min'
         });
 
@@ -33,11 +32,11 @@ module.exports={
 
         const response= await connection('administradores').where('email',email).select('id','senha').first();
 
-        if (!response || ! await bcrypt.compare(senha,response.senha)){
+        if (!response || !await bcrypt.compare(senha,response.senha)){
             return res.status(401).send({message:'Email ou senha incorretos'});
         }
 
-        const token=jwt.sign({id:response.id},'adm',{
+        const token=jwt.sign({id:response.id},process.env.APP_JWT_ADM,{
             expiresIn:'240min'
         });
 

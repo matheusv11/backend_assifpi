@@ -1,8 +1,6 @@
 const connection= require('../database/connection');
 const axios= require('axios');
 const mercadopago = require ('mercadopago');
-const test_token= process.env.DEV_TOKEN || 'TEST-7299947505493806-072301-a203cd55e08507243af00f152f981e14-223033116';
-const produc_token= process.env.PRODUCTION_TOKEN || 'APP_USR-7254907496015842-072301-a78b3b8e3f32e66b1d9b591207db3caa-613885036';
 const WrapperPromise= require('../utils/WrapperPromise');
 
 module.exports={
@@ -114,7 +112,7 @@ module.exports={
         const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
         // console.log(diffDays);
 
-        mercadopago.configure({access_token: test_token});
+        mercadopago.configure({access_token: process.env.APP_DEV_TOKEN});
         
         const preference = {
         items: [
@@ -152,7 +150,7 @@ module.exports={
             return res.status(200).send()
         }
 
-        axios.get(`https://api.mercadopago.com/v1/payments/${req.body.data.id}?access_token=${test_token}`).then(async(dados)=>{
+        axios.get(`https://api.mercadopago.com/v1/payments/${req.body.data.id}?access_token=${process.env.APP_DEV_TOKEN}`).then(async(dados)=>{
             console.log(dados.data)
             let external= dados.data.external_reference
             let parts= external.split('-')
@@ -186,7 +184,7 @@ module.exports={
         const valor= req.body.valor;
         // const id= req.params.id;//Id da fatura
 
-        mercadopago.configure({access_token: test_token});
+        mercadopago.configure({access_token: process.env.APP_DEV_TOKEN});
 
         const preference = {
         items: [

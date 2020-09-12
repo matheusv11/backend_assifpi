@@ -1,11 +1,12 @@
 const nodemailer= require('nodemailer');
 const jwt= require('jsonwebtoken');
 //connection sqlite
+
 const transporter= nodemailer.createTransport({
     service: 'gmail',
     auth:{
-        user:'mathsales360@gmail.com',
-        pass:'hyperpunk2025'
+        user: process.env.APP_EMAIL,
+        pass: process.env.APP_SENHA_EMAIL
     }
 });
 
@@ -86,7 +87,7 @@ module.exports= {
             to: email,
             subject:'Resetar senha',
             text:  "Email de solicitação de recuperação de senha",
-            html: `Confirme seu email no seguinte link: http://localhost:3000/recuperar/${token}`
+            html: `Confirme seu email no seguinte link: ${process.env.APP_URL}/recuperar/${token}`
         }, error)
     }
 }

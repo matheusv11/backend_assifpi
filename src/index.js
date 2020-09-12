@@ -1,10 +1,11 @@
+require('dotenv').config();
 const express= require('express');
 const app= express();
 const cors= require('cors');
 const routes= require('./routes');
 const handle_errors= require('./configs/handle_errors')
 const verifica_fatura= require('./utils/verifica_fatura');
-const port= process.env.PORT || 3030;
+const port= process.env.PORT;
 
 app.use(cors({exposedHeaders: 'total-count'})); //Set header //In pagination eventos
 //app.use(cors());
