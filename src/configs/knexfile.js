@@ -30,8 +30,7 @@ module.exports = {
     //   database: process.env.APP_DATABASE,
     // },
     connection:{
-      database: `${process.env.DATABASE_URL}?ssl=true`,
-      ssl: true
+      database: `${process.env.DATABASE_URL}`,
     },
     
     pool:{
