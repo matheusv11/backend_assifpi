@@ -156,7 +156,7 @@ module.exports={
             let parts= external.split('-')
 
             if(dados.data.status=="approved" && parts[1]=="payall"){
-                await connection('faturas').where('socio_id', parts[0]).update({
+                await connection('faturas').where('socio_id', parts[0]).andWhere('faturas.status','pending').andWhere('faturas.renovada',1).update({ //Rejetiada
                     status: dados.data.status, boleto: dados.data.transaction_details.external_resource_url,
                     compra_id: dados.data.id, valor: dados.data.transaction_details.net_received_amount
                 })
@@ -180,9 +180,26 @@ module.exports={
     },
 
     async personal_fatura(req,res){
-        const socio_id= req.params.id;
-        const valor= req.body.valor;
+        const valor= parseInt(req.body.valor,10);
+        const cpf= req.body.cpf;
         // const id= req.params.id;//Id da fatura
+
+       const atrasadas= await connection('socios')
+       .join('faturas', 'faturas.socio_id','=','socios.id')
+       .where('socios.cpf',cpf)
+       .andWhere('socios.pagamento','mercadopago')
+       .andWhere('faturas.status','pending')
+       .andWhere('faturas.renovada', 1)
+       .select('socios.id as socio_id','socios.nome','socios.rg','socios.cpf','faturas.status','faturas.data_criacao','faturas.data_vencimento')
+    //    .first()
+        
+       if(!atrasadas[0]){
+           return res.status(404).send({message: 'Este usuario não foi encontrado'})
+       }
+    
+       if(req.query.condicao=="consulta"){
+           return res.status(200).send(atrasadas)
+       }
 
         mercadopago.configure({access_token: process.env.APP_DEV_TOKEN});
 
@@ -195,7 +212,7 @@ module.exports={
             }
         ],
 
-        external_reference: `${socio_id}-payall`,
+        external_reference: `${atrasadas[0].socio_id}-payall`,
         back_urls: {
             success: "https://frontend-assifpi.herokuapp.com",
             failure: "https://frontend-assifpi.herokuapp.com",
@@ -208,6 +225,7 @@ module.exports={
 
         mercadopago.preferences.create(preference)
         .then(function(response){
+            // return res.json({mercadopago: response, faturas: atrasadas})
             return res.json(response)
         }).catch(function(error){
             console.log(error);
