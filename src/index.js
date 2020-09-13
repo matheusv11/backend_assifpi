@@ -13,11 +13,6 @@ app.use(express.json());
 app.use(routes);
 app.use(handle_errors);
 
-console.log(process.env.PORT)
-console.log(process.env.APP_URL);
-console.log(process.env.APP_JWT_SOCIO);
-
-
 setInterval(verifica_fatura, 2000);
 // 21600000
 
