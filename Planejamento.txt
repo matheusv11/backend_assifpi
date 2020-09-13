@@ -137,3 +137,7 @@ Funcionalidades:
 	3.Mudar a cor vermelha da navbar(sugestao azul)		
 	2.Frente e verso RG ou so o CNH
 	1.adicionar comprovante de parentesco pro dependente
+
+
+
+Envs default heroku: NODE_ENV=production; PORT= ;DATABASE_URL= ;

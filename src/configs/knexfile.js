@@ -1,7 +1,6 @@
 // Update with your config settings.
 const path= require('path');
 
-
 module.exports = {
 
   development: {
@@ -13,7 +12,7 @@ module.exports = {
     migrations: {
       directory: '../database/migrations'
     },
-
+ 
     seeds:{
       directory: '../database/seeds'
     },
@@ -22,17 +21,27 @@ module.exports = {
 
   },
 
-  making:{
-    client: 'mysql',
+  production:{
+    client: 'pg',
+    // connection:{
+    //   host: process.env.APP_DATABASE_HOST,
+    //   user: process.env.APP_DATABASE_USER,
+    //   password: process.env.APP_DATABASE_PASSWORD,
+    //   database: process.env.APP_DATABASE,
+    // },
     connection:{
-      host: 'localhost',
-      user: 'root',
-      password: 'root',
-      database: 'lemon',
+      database: process.env.DATABASE_URL
+    },
+    pool:{
+      min:2,
+      max:10
     },
     migrations:{
-      directory: './src/database/migrations'
+      directory: '../database/migrations'
     },
+    
+    useNullAsDefault: true
+
   },
   
 };
