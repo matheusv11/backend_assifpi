@@ -29,12 +29,10 @@ module.exports = {
     //   password: process.env.APP_DATABASE_PASSWORD,
     //   database: process.env.APP_DATABASE,
     // },
-    // connection:{
-      // database: `${process.env.DATABASE_URL}`,
-    // },
-
     connection: process.env.DATABASE_URL,
-
+    seeds:{
+      directory: '../database/seeds'
+    },
     pool:{
       min:2,
       max:10
