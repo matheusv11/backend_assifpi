@@ -10,5 +10,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.dropTable('administradores');
+  return knex.schema.dropTable('administradores');
 };
