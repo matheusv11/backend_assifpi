@@ -93,7 +93,7 @@ module.exports={
     async index_socios(req,res){
         const {cpf='', page=1}=req.query;
 
-        const [total]= await connection('socios').count();//Tira o array
+        const [total]= await connection('socios').count('id as count');//Tira o array
 
         const response= await connection('socios')
         .join('documentos','documentos.socio_id', '=', 'socios.id')
@@ -106,7 +106,7 @@ module.exports={
         .limit(10)
         .offset((page-1)*10)
 
-        res.header('total-count', total['count(*)']);
+        res.header('total-count', total['count']);
 
         return res.status(200).send(response);
 

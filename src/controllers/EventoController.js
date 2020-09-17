@@ -9,7 +9,7 @@ module.exports={
         //Listar eventos
         const {page=1}=req.query;
 
-        const [total]= await connection('eventos').count();//Tira o array
+        const [total]= await connection('eventos').count('id as count');//Tira o array
 
         const response= await connection('eventos')
         .select('*')
@@ -19,8 +19,6 @@ module.exports={
 
         res.header('total-count', total['count']);
 
-        console.log(total.count);
-        
         return res.status(200).send(response);
     },
 
