@@ -17,7 +17,7 @@ module.exports={
         .offset((page-1)*5)
         .orderBy('id', 'desc');
 
-        res.header('total-count', total['count(*)']);
+        res.header('total-count', total['count']);
 
         console.log(total.count);
         
