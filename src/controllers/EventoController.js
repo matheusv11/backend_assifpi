@@ -19,7 +19,7 @@ module.exports={
 
         res.header('total-count', total['count(*)']);
 
-        console.log(total);
+        console.log(total.count);
         
         return res.status(200).send(response);
     },
