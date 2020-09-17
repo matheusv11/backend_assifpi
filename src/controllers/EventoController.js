@@ -19,6 +19,8 @@ module.exports={
 
         res.header('total-count', total['count(*)']);
 
+        console.log(total);
+        
         return res.status(200).send(response);
     },
 
