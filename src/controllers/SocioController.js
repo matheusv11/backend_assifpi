@@ -121,20 +121,22 @@ module.exports={
             return res.status(401).send({message: 'Este socio ja foi confirmado'});
         }
 
-        await connection('socios').where('id', socio_id).update({
-            confirmado: true, pagamento: presencial
-        }); //
+        // await connection('socios').where('id', socio_id).update({
+            // confirmado: true, pagamento: presencial
+        // }); //
 
         if(presencial==="mercadopago"){
             const now = new Date();
             const data_criacao= `${("0"+(now.getDate())).slice(-2)}/${("0"+(now.getMonth()+1)).slice(-2)}/${now.getFullYear()}`
-    
+            
+            console.log(data_criacao);
+
             await connection('faturas').insert({
                 socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 0
             })
             
         }
-        sendmail.confirm(response.email);
+        // sendmail.confirm(response.email);
         log(`Confirmou o socio de id=${socio_id}`, req.adm_id);
 
         return res.status(200).send({message: 'Socio confirmado com sucesso'});
