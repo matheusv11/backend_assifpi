@@ -8,7 +8,8 @@ module.exports=async ()=>{
     // const vencimento = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
     // const data_vencimento= `${("0"+(vencimento.getDate())).slice(-2)}/${("0"+(vencimento.getMonth()+1)).slice(-2)}/${vencimento.getFullYear()}`
     // console.log(now.toISOString().substr(0, 10).split('-').reverse().join('/'));
-
+    // console.log(now.toLocaleDateString('pt-BR'));
+    
     response.map(async dados=>{
         let vencida= dados.data_vencimento//Data de vencimento
         let parts = vencida.split('/');
