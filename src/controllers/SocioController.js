@@ -128,11 +128,10 @@ module.exports={
         if(presencial==="mercadopago"){
             const now = new Date();
             const data_criacao= `${("0"+(now.getDate())).slice(-2)}/${("0"+(now.getMonth()+1)).slice(-2)}/${now.getFullYear()}`
-            
-            console.log(data_criacao);
+            const new_data= data_criacao.toString();
 
             await connection('faturas').insert({
-                socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 0
+                socio_id, cpf: response.cpf, status: 'pending', data_criacao: new_data,data_vencimento: new_data, renovada: 0
             })
             
         }
