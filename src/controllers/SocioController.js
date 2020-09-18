@@ -126,7 +126,7 @@ module.exports={
         }); //
 
         if(presencial==="mercadopago"){
-            const data_criacao= new Date().toLocaleDateString('en-US')
+            const data_criacao= new Date().toISOString().substr(0,10)
             
             await connection('faturas').insert({
                 socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 0

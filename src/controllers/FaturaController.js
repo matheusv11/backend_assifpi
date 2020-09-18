@@ -26,20 +26,20 @@ module.exports={
             const {ano="2019"}= req.query;
 
             const anos= await connection('faturas').where('renovada', 1)
-            .select(connection.raw(`strftime('%Y', substr(data_criacao, 7, 4) || '-' || substr(data_criacao, 4, 2) || '-' || substr(data_criacao, 1, 2)) as ano`)) //Verificar se esse formato ta com mes e dia correto //ex: https://stackoverflow.com/questions/14091183/sqlite-order-by-date1530019888000
-            .distinct(); 
+            .select(connection.raw(`substr(data_criacao, 1, 4) as ano`)) 
+            .distinct();
             
             const anos_gastos= await connection('gastos')
-            // .whereNotIn(connection.raw(`substr(data, 7, 4)`), anos.map(anos=>{return anos.ano})) //Melhorar isso
-            .select(connection.raw(`strftime('%Y', substr(data, 7, 4) || '-' || substr(data, 4, 2) || '-' || substr(data, 1, 2)) as ano`))
+            .select(connection.raw(`substr(data, 1, 4) as ano`))
             .distinct()
 
             const intersection= anos.concat(anos_gastos);
-            
+
             const filter_anos = intersection.filter((item, pos, self)=> {
                 return self[pos].ano.indexOf(item.ano) !== pos;
             })
 
+            console.log(filter_anos)
             //GANHOS --------
             const meses_anos= await connection('faturas')
             .where('renovada', 1)
@@ -104,9 +104,8 @@ module.exports={
 
         const response= await connection('faturas').where('socio_id', socio_id).andWhere('id', id).select('*').first()
 
-        // console.log(response)
         const now = new Date();
-        const data_vencimento = new Date(response.data_vencimento.split('/').reverse().join('-'));
+        const data_vencimento = new Date(response.data_vencimento);
 
         const timeDiff = now.getTime() - data_vencimento.getTime() 
         const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
