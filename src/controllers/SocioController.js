@@ -121,13 +121,11 @@ module.exports={
             return res.status(401).send({message: 'Este socio ja foi confirmado'});
         }
 
-        // await connection('socios').where('id', socio_id).update({
-            // confirmado: true, pagamento: presencial
-        // }); //
+        await connection('socios').where('id', socio_id).update({
+            confirmado: true, pagamento: presencial
+        }); //
 
         if(presencial==="mercadopago"){
-            const now = new Date();
-            // const data_criacao= `${("0"+(now.getDate())).slice(-2)}/${("0"+(now.getMonth()+1)).slice(-2)}/${now.getFullYear()}`
             const data_criacao= new Date().toLocaleDateString('en-US')
             
             await connection('faturas').insert({

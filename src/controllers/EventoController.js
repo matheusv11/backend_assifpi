@@ -26,7 +26,7 @@ module.exports={
         const {data,hora,local,titulo, descricao}=req.body;
         
         await connection('eventos').insert({
-                data: data==='undefined/undefined/' ? null : data,
+                data: !data ? null : data,  //Mudar
                 hora,
                 local,
                 titulo,
