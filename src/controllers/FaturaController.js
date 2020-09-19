@@ -45,9 +45,9 @@ module.exports={
             .where('renovada', 1)
             .andWhere(connection.raw(`substr(data_criacao${varchar}, 1, 4)`),ano) //Selecionar o ano
             .orderBy(connection.raw(`substr(data_criacao${varchar}, 6, 2)`), 'asc') //Muito bacana //Alterar depois nos outros
-            .groupBy(connection.raw(`substr(data_criacao${varchar}, 6, 2)`)) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
             // .select(connection.raw(`substr(data_criacao, 1, 4) || '-' || substr(data_criacao, 6, 2) as meses_anos`)) //Ou object values pra remover o objeto
             .select(connection.raw(`substr(data_criacao${varchar}, 1, 7) as meses_anos`))
+            .groupBy(connection.raw(`substr(data_criacao${varchar}, 6, 2)`)) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
            
             const soma_ganhos= meses_anos.map(async datas=>{
 
@@ -64,8 +64,8 @@ module.exports={
             const meses_gastos= await connection('gastos')
             .andWhere(connection.raw(`substr(data${varchar}, 1, 4)`),ano) //Selecionar o ano
             .orderBy(connection.raw(`substr(data${varchar}, 6, 2)`), 'asc') //Muito bacana //Alterar depois nos outros
-            .groupBy(connection.raw(`substr(data${varchar}, 6, 2)`)) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
             .select(connection.raw(`substr(data${varchar}, 1, 7)  as meses_gastos`)) //Ou object values pra remover o objeto
+            .groupBy(connection.raw(`substr(data${varchar}, 6, 2)`)) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
 
             const soma_gastos= meses_gastos.map(async gastos=>{
                 const [sum_gastos]= await connection('gastos')
