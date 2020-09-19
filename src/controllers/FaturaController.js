@@ -101,8 +101,6 @@ module.exports={
             const WrappedGanhos= await WrapperPromise(soma_ganhos);
             const WrappedGastos= await WrapperPromise(soma_gastos);
 
-            console.log(WrappedGanhos)
-            console.log(WrappedGastos)
             resolve({soma_ganhos: WrappedGanhos, soma_gastos: WrappedGastos, anos: filter_anos, doughnut});
 
         }).then((dados)=>{            
@@ -173,7 +171,7 @@ module.exports={
             if(dados.data.status=="approved" && parts[1]=="payall"){
                 await connection('faturas').where('socio_id', parts[0]).andWhere('faturas.status','pending').andWhere('faturas.renovada',1).update({ //Rejetiada
                     status: dados.data.status, boleto: dados.data.transaction_details.external_resource_url,
-                    compra_id: dados.data.id, valor: dados.data.transaction_details.net_received_amount
+                    compra_id: dados.data.id, recebido: dados.data.transaction_details.net_received_amount
                 })
 
                 return res.status(200).send();
@@ -181,7 +179,7 @@ module.exports={
             
             await connection('faturas').where('socio_id', parts[0]).andWhere('id', parts[1]).update({
                 status: dados.data.status, boleto: dados.data.transaction_details.external_resource_url,
-                compra_id: dados.data.id, valor: dados.data.transaction_details.net_received_amount//Valor com os 5%
+                compra_id: dados.data.id, recebido: dados.data.transaction_details.net_received_amount//Valor com os 5%
             });
             
             return res.status(200).send();

@@ -129,7 +129,7 @@ module.exports={
             const data_criacao= new Date().toISOString().substr(0,10)
             
             await connection('faturas').insert({
-                socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 0
+                socio_id, cpf: response.cpf, status: 'pending', data_criacao,data_vencimento: data_criacao, renovada: 0, valor: 62
             })
             
         }

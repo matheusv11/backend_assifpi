@@ -16,7 +16,7 @@ module.exports=async ()=>{
 
             await connection('faturas').insert({
                     socio_id: dados.socio_id, cpf: dados.cpf, status: 'pending', data_criacao,
-                    data_vencimento, renovada: 0,
+                    data_vencimento, renovada: 0, valor: 62
             })
         }
     })
