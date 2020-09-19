@@ -41,12 +41,18 @@ module.exports={
             .sort((a,b)=> {return a.ano-b.ano});
 
             //GANHOS --------
-            const meses_anos= await connection.raw(`
-                SELECT (substr(data_criacao${varchar}, 1, 7)) as meses_anos from faturas
-                where renovada = true AND substr(data_criacao${varchar}, 1, 4) like ${ano}${varchar}
-                GROUP BY data_criacao
-                ORDER BY (substr(data_criacao${varchar}, 6,2)) ASC 
-            `)
+            // const meses_anos= await connection.raw(`
+            //     SELECT (substr(data_criacao${varchar}, 1, 7)) as meses_anos from faturas
+            //     where renovada = true AND substr(data_criacao${varchar}, 1, 4) like ${ano}${varchar}
+            //     GROUP BY data_criacao
+            //     ORDER BY (substr(data_criacao${varchar}, 6,2)) ASC 
+            // `)
+            const meses_anos= await connection('faturas')
+            .where('renovada', 1)
+            .andWhere(connection.raw(`substr(data_criacao${varchar}, 1, 4)`),ano) //Selecionar o ano
+            .orderBy(connection.raw(`substr(data_criacao${varchar}, 4, 2)`), 'asc') //Muito bacana //Alterar depois nos outros
+            .groupBy('data_criacao') //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
+            .select(connection.raw(`substr(data_criacao${varchar}, 1, 7) as meses_anos`)) //Ou object values pra remover o objeto
 
             const soma_ganhos= meses_anos.map(async datas=>{
 
