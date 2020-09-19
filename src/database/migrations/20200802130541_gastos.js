@@ -3,7 +3,7 @@ exports.up = function(knex) {
   return knex.schema.createTable('gastos', table=>{
     table.increments();
     table.string('descricao')
-    table.string('valor')
+    table.float('valor')
     table.date('data')
   })
 };

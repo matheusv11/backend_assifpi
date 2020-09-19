@@ -10,8 +10,8 @@ exports.up = function(knex) {
         table.date('data_criacao');
         table.date('data_vencimento');
         table.boolean('renovada');
-        table.string('valor');
-        table.string('recebido');
+        table.float('valor');
+        table.float('recebido');
     })
   };
   
