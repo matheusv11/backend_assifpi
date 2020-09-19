@@ -42,15 +42,12 @@ module.exports={
 
             //GANHOS --------
             const meses_anos= await connection.raw(`
-                SELECT DISTINCT (substr(data_criacao${varchar}, 1, 7)) as meses_anos from faturas
+                SELECT DISTINCT (substr(data_criacao${varchar}, 1, 7)) as meses_anos from (
+                SELECT data_criacao from faturas
                 where renovada = true AND substr(data_criacao${varchar}, 1, 4) like ${ano}${varchar}
-                ORDER BY (substr(data_criacao${varchar}, 6,2)) ASC 
+                ORDER BY (substr(data_criacao${varchar}, 6,2)) ASC )
             `)
-            // .select(connection.raw(`DISTINCT (substr(data_criacao${varchar}, 1, 7)) as meses_anos from faturas ORDER BY id`))
-            // .orderBy(connection.raw(`substr(data_criacao${varchar}, 6, 2)`), 'asc') //Muito bacana //Alterar depois nos outros
-            // .where('renovada', 1)
-            // .andWhere(connection.raw(`substr(data_criacao${varchar}, 1, 4)`),ano) //Selecionar o ano
-           
+
             const soma_ganhos= meses_anos.map(async datas=>{
 
                 const [ok]= await connection('faturas')
