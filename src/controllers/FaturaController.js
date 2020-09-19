@@ -46,12 +46,12 @@ module.exports={
             .orderBy(connection.raw('substr(data_criacao, 6, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
             .groupBy(connection.raw('substr(data_criacao, 6, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
             // .select(connection.raw(`substr(data_criacao, 1, 4) || '-' || substr(data_criacao, 6, 2) as meses_anos`)) //Ou object values pra remover o objeto
-            .select(connection.raw(`substr(data_criacao, 6, 2) || '/' || substr(data_criacao, 1, 4) as meses_anos`))
+            .select(connection.raw(`substr(data_criacao, 1, 7) as meses_anos`))
            
             const soma_ganhos= meses_anos.map(async datas=>{
 
                 const [ok]= await connection('faturas')
-                .where(connection.raw(`substr(data_criacao, 6, 2) || '/' || substr(data_criacao, 1, 4)`),datas.meses_anos)
+                .where(connection.raw(`substr(data_criacao, 1, 7)`),datas.meses_anos)
                 .sum(`recebido as ${datas.meses_anos}`)
                 // .select(connection.raw(`substr(data_criacao, 1, 4) || '/' || substr(data_criacao, 6, 2) as sim`)).first()
 
@@ -64,11 +64,11 @@ module.exports={
             .andWhere(connection.raw(`substr(data, 1, 4)`),ano) //Selecionar o ano
             .orderBy(connection.raw('substr(data, 6, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
             .groupBy(connection.raw('substr(data, 6, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
-            .select(connection.raw(`substr(data, 6, 2) || '/' || substr(data, 1, 4) as meses_gastos`)) //Ou object values pra remover o objeto
+            .select(connection.raw(`substr(data, 1, 7)  as meses_gastos`)) //Ou object values pra remover o objeto
 
             const soma_gastos= meses_gastos.map(async gastos=>{
                 const [sum_gastos]= await connection('gastos')
-                .where(connection.raw(`substr(data, 6, 2) || '/' || substr(data, 1, 4)`), gastos.meses_gastos)
+                .where(connection.raw(`substr(data, 1, 7)`), gastos.meses_gastos)
                 .sum(`valor as ${gastos.meses_gastos}`)
 
                 return sum_gastos;
