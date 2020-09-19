@@ -65,17 +65,18 @@ module.exports={
 
 
             //GASTOS --------
-            const meses_gastos=  await connection.raw(`
-            SELECT DISTINCT (substr(data${varchar}, 1, 7)) as meses_gastos from gastos
-            where substr(data${varchar},1,4) like ${ano}${varchar}
-            GROUP BY data
-            ORDER BY (substr(data${varchar}, 6,2)) ASC 
-        `)
-            // const meses_gastos= await connection('gastos')
-            // .andWhere(connection.raw(`substr(data${varchar}, 1, 4)`),ano) //Selecionar o ano
-            // .orderBy(connection.raw(`substr(data${varchar}, 6, 2)`), 'asc') //Muito bacana //Alterar depois nos outros
-            // .groupBy(connection.raw(`substr(data${varchar}, 6, 2)`)) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
-            // .select(connection.raw(`substr(data${varchar}, 1, 7)  as meses_gastos`)) //Ou object values pra remover o objeto
+            // const meses_gastos=  await connection.raw(`
+            // SELECT (substr(data${varchar}, 1, 7)) as meses_gastos from gastos
+            // where substr(data${varchar},1,4) like ${ano}${varchar}
+            // GROUP BY data
+            // ORDER BY (substr(data${varchar}, 6,2)) ASC 
+            // `)
+            
+            const meses_gastos= await connection('gastos')
+            .andWhere(connection.raw(`substr(data${varchar}, 1, 4)`),ano) 
+            .orderBy(connection.raw(`substr(data${varchar}, 6, 2)`), 'asc') 
+            .groupBy('data') 
+            .select(connection.raw(`substr(data${varchar}, 1, 7)  as meses_gastos`)) 
 
             const soma_gastos= meses_gastos.map(async gastos=>{
                 const [sum_gastos]= await connection('gastos')
