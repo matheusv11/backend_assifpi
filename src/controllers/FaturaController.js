@@ -101,6 +101,8 @@ module.exports={
             const WrappedGanhos= await WrapperPromise(soma_ganhos);
             const WrappedGastos= await WrapperPromise(soma_gastos);
 
+            console.log(WrappedGanhos)
+            console.log(WrappedGastos)
             resolve({soma_ganhos: WrappedGanhos, soma_gastos: WrappedGastos, anos: filter_anos, doughnut});
 
         }).then((dados)=>{            
