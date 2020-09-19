@@ -2,6 +2,7 @@ const connection= require('../database/connection');
 const axios= require('axios');
 const mercadopago = require ('mercadopago');
 const WrapperPromise= require('../utils/WrapperPromise');
+const varchar= process.env.NODE_ENV=="production" ? '::varchar' : ''
 
 module.exports={
     async index(req,res){
@@ -27,11 +28,11 @@ module.exports={
             const {ano="2019"}= req.query;
 
             const anos= await connection('faturas').where('renovada', 1)
-            .select(connection.raw(`substr(data_criacao, 1, 4) as ano`)) 
+            .select(connection.raw(`substr(data_criacao${varchar}, 1, 4) as ano`)) 
             .distinct();
             
             const anos_gastos= await connection('gastos')
-            .select(connection.raw(`substr(data, 1, 4) as ano`))
+            .select(connection.raw(`substr(data${varchar}, 1, 4) as ano`))
             .distinct()
 
             const intersection= anos.concat(anos_gastos); 
@@ -42,16 +43,16 @@ module.exports={
             //GANHOS --------
             const meses_anos= await connection('faturas')
             .where('renovada', 1)
-            .andWhere(connection.raw(`substr(data_criacao, 1, 4)`),ano) //Selecionar o ano
-            .orderBy(connection.raw('substr(data_criacao, 6, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
-            .groupBy(connection.raw('substr(data_criacao, 6, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
+            .andWhere(connection.raw(`substr(data_criacao${varchar}, 1, 4)`),ano) //Selecionar o ano
+            .orderBy(connection.raw(`substr(data_criacao${varchar}, 6, 2)`), 'asc') //Muito bacana //Alterar depois nos outros
+            .groupBy(connection.raw(`substr(data_criacao${varchar}, 6, 2)`)) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
             // .select(connection.raw(`substr(data_criacao, 1, 4) || '-' || substr(data_criacao, 6, 2) as meses_anos`)) //Ou object values pra remover o objeto
-            .select(connection.raw(`substr(data_criacao, 1, 7) as meses_anos`))
+            .select(connection.raw(`substr(data_criacao${varchar}, 1, 7) as meses_anos`))
            
             const soma_ganhos= meses_anos.map(async datas=>{
 
                 const [ok]= await connection('faturas')
-                .where(connection.raw(`substr(data_criacao, 1, 7)`),datas.meses_anos)
+                .where(connection.raw(`substr(data_criacao${varchar}, 1, 7)`),datas.meses_anos)
                 .sum(`recebido as ${datas.meses_anos}`)
                 // .select(connection.raw(`substr(data_criacao, 1, 4) || '/' || substr(data_criacao, 6, 2) as sim`)).first()
 
@@ -61,14 +62,14 @@ module.exports={
 
             //GASTOS --------
             const meses_gastos= await connection('gastos')
-            .andWhere(connection.raw(`substr(data, 1, 4)`),ano) //Selecionar o ano
-            .orderBy(connection.raw('substr(data, 6, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
-            .groupBy(connection.raw('substr(data, 6, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
-            .select(connection.raw(`substr(data, 1, 7)  as meses_gastos`)) //Ou object values pra remover o objeto
+            .andWhere(connection.raw(`substr(data${varchar}, 1, 4)`),ano) //Selecionar o ano
+            .orderBy(connection.raw(`substr(data${varchar}, 6, 2)`), 'asc') //Muito bacana //Alterar depois nos outros
+            .groupBy(connection.raw(`substr(data${varchar}, 6, 2)`)) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
+            .select(connection.raw(`substr(data${varchar}, 1, 7)  as meses_gastos`)) //Ou object values pra remover o objeto
 
             const soma_gastos= meses_gastos.map(async gastos=>{
                 const [sum_gastos]= await connection('gastos')
-                .where(connection.raw(`substr(data, 1, 7)`), gastos.meses_gastos)
+                .where(connection.raw(`substr(data${varchar}, 1, 7)`), gastos.meses_gastos)
                 .sum(`valor as ${gastos.meses_gastos}`)
 
                 return sum_gastos;
