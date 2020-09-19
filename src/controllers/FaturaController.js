@@ -63,8 +63,7 @@ module.exports={
             //GASTOS --------
             const meses_gastos= await connection('gastos')
             .andWhere(connection.raw(`substr(data${varchar}, 1, 4)`),ano) //Selecionar o ano
-            .select(connection.raw(`substr(data${varchar}, 1, 7)  as meses_gastos`)) //Ou object values pra remover o objeto
-            .distinct()
+            .select(connection.raw(`DISTINCT substr(data${varchar}, 1, 7)  as meses_gastos`)) //Ou object values pra remover o objeto
             .orderBy(connection.raw(`substr(data${varchar}, 6, 2)`), 'asc') //Muito bacana //Alterar depois nos outros
             // .groupBy(connection.raw(`substr(data${varchar}, 6, 2)`)) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
 
