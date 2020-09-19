@@ -42,10 +42,10 @@ module.exports={
 
             //GANHOS --------
             const meses_anos= await connection.raw(`
-                SELECT DISTINCT (substr(data_criacao${varchar}, 1, 7)) as meses_anos from (
-                SELECT data_criacao from faturas
+                SELECT (substr(data_criacao${varchar}, 1, 7)) as meses_anos from faturas
                 where renovada = true AND substr(data_criacao${varchar}, 1, 4) like ${ano}${varchar}
-                ORDER BY (substr(data_criacao${varchar}, 6,2)) ASC )
+                GROUP BY data_criacao
+                ORDER BY (substr(data_criacao${varchar}, 6,2)) ASC 
             `)
 
             const soma_ganhos= meses_anos.map(async datas=>{
@@ -62,6 +62,7 @@ module.exports={
             const meses_gastos=  await connection.raw(`
             SELECT DISTINCT (substr(data${varchar}, 1, 7)) as meses_gastos from gastos
             where substr(data${varchar},1,4) like ${ano}${varchar}
+            GROUP BY data
             ORDER BY (substr(data${varchar}, 6,2)) ASC 
         `)
             // const meses_gastos= await connection('gastos')
