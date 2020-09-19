@@ -69,9 +69,7 @@ module.exports={
         const data_agenda= await connection('agenda').where('id', agenda_id).select('data').first();
 
         const now= new Date();
-        const validade= data_agenda.data
-        const parts = validade.split('/');
-        const data = new Date(parts[2], parts[1] - 1, parts[0]);
+        const data = new Date(data_agenda.data);
 
         if(now>=data){
             return res.status(401).send({message: 'Você não pode deletar pois este evento já passou'})

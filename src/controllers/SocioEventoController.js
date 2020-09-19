@@ -19,13 +19,11 @@ module.exports={
         //Ainda posso verificar se de fato esse socio existe apesar do jwt ou verificar se o evento existe mesmo;
         const socio_id= req.socio_id;
         const evento_id= req.params.id;
-        const now = new Date();
 
         const data_evento= await connection('eventos').where('id', evento_id).select('data').first();
 
-        const vencimento= data_evento.data
-        const parts = vencimento.split('/');
-        const data = new Date(parts[2], parts[1] - 1, parts[0]);
+        const now = new Date();
+        const data = new Date(data_evento.data);
 
         if(now>data){
             return res.status(401).send({message: 'Evento ja finalizado'})

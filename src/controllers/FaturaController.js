@@ -5,6 +5,7 @@ const WrapperPromise= require('../utils/WrapperPromise');
 
 module.exports={
     async index(req,res){
+
         const response= await connection('faturas')
         .join('socios', 'socios.id', '=', 'faturas.socio_id')
         .where('faturas.status', 'pending').andWhere('faturas.renovada', 1).select('socios.nome','socios.cpf').distinct();//Evitar dados repetido
@@ -33,40 +34,41 @@ module.exports={
             .select(connection.raw(`substr(data, 1, 4) as ano`))
             .distinct()
 
-            const intersection= anos.concat(anos_gastos);
+            const intersection= anos.concat(anos_gastos); 
 
-            const filter_anos = intersection.filter((item, pos, self)=> {
-                return self[pos].ano.indexOf(item.ano) !== pos;
-            })
+            const filter_anos = [...new Map(intersection.map(obj => [obj.ano, obj])).values()]
+            .sort((a,b)=> {return a.ano-b.ano});
 
-            console.log(filter_anos)
             //GANHOS --------
             const meses_anos= await connection('faturas')
             .where('renovada', 1)
-            .andWhere(connection.raw(`substr(data_criacao, 7, 4)`),ano) //Selecionar o ano
-            .orderBy(connection.raw('substr(data_criacao, 4, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
-            .groupBy(connection.raw('substr(data_criacao, 4, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
-            .select(connection.raw(`substr(data_criacao, 4, 2) || '/' || substr(data_criacao, 7, 4) as meses_anos`)) //Ou object values pra remover o objeto
-
+            .andWhere(connection.raw(`substr(data_criacao, 1, 4)`),ano) //Selecionar o ano
+            .orderBy(connection.raw('substr(data_criacao, 6, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
+            .groupBy(connection.raw('substr(data_criacao, 6, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
+            // .select(connection.raw(`substr(data_criacao, 1, 4) || '-' || substr(data_criacao, 6, 2) as meses_anos`)) //Ou object values pra remover o objeto
+            .select(connection.raw(`substr(data_criacao, 6, 2) || '/' || substr(data_criacao, 1, 4) as meses_anos`))
+           
             const soma_ganhos= meses_anos.map(async datas=>{
 
                 const [ok]= await connection('faturas')
-                .where(connection.raw(`substr(data_criacao, 4, 2) || '/' || substr(data_criacao, 7, 4)`),datas.meses_anos)
+                .where(connection.raw(`substr(data_criacao, 6, 2) || '/' || substr(data_criacao, 1, 4)`),datas.meses_anos)
                 .sum(`recebido as ${datas.meses_anos}`)
+                // .select(connection.raw(`substr(data_criacao, 1, 4) || '/' || substr(data_criacao, 6, 2) as sim`)).first()
 
                 return ok
             })
 
+
             //GASTOS --------
             const meses_gastos= await connection('gastos')
-            .andWhere(connection.raw(`substr(data, 7, 4)`),ano) //Selecionar o ano
-            .orderBy(connection.raw('substr(data, 4, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
-            .groupBy(connection.raw('substr(data, 4, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
-            .select(connection.raw(`substr(data, 4, 2) || '/' || substr(data, 7, 4) as meses_gastos`)) //Ou object values pra remover o objeto
+            .andWhere(connection.raw(`substr(data, 1, 4)`),ano) //Selecionar o ano
+            .orderBy(connection.raw('substr(data, 6, 2)'), 'asc') //Muito bacana //Alterar depois nos outros
+            .groupBy(connection.raw('substr(data, 6, 2)')) //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
+            .select(connection.raw(`substr(data, 6, 2) || '/' || substr(data, 1, 4) as meses_gastos`)) //Ou object values pra remover o objeto
 
             const soma_gastos= meses_gastos.map(async gastos=>{
                 const [sum_gastos]= await connection('gastos')
-                .where(connection.raw(`substr(data, 4, 2) || '/' || substr(data, 7, 4)`), gastos.meses_gastos)
+                .where(connection.raw(`substr(data, 6, 2) || '/' || substr(data, 1, 4)`), gastos.meses_gastos)
                 .sum(`valor as ${gastos.meses_gastos}`)
 
                 return sum_gastos;
@@ -75,7 +77,7 @@ module.exports={
             //GRAFICO PIZZA -----------
             const [emdia]= await connection('faturas')
             .where('renovada', 1)
-            .andWhere('status', 'accepted')
+            .andWhere('status', 'approved')
             .countDistinct('socio_id as emdia') //Verificar direito isso
             
             const [pendentes]= await connection('faturas')
@@ -179,7 +181,7 @@ module.exports={
     },
 
     async personal_fatura(req,res){
-        const valor= parseInt(req.body.valor,10);
+        const valor= parseInt(req.body.valor);
         const cpf= req.body.cpf;
         // const id= req.params.id;//Id da fatura
 
