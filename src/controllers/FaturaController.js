@@ -73,10 +73,10 @@ module.exports={
             // `)
             
             const meses_gastos= await connection('gastos')
+            .select(connection.raw(`substr(data${varchar}, 1, 7)  as meses_gastos`)) 
             .andWhere(connection.raw(`substr(data${varchar}, 1, 4)`),ano) 
             .orderBy(connection.raw(`substr(data${varchar}, 6, 2)`), 'asc') 
             .groupBy('data') 
-            .select(connection.raw(`substr(data${varchar}, 1, 7)  as meses_gastos`)) 
 
             const soma_gastos= meses_gastos.map(async gastos=>{
                 const [sum_gastos]= await connection('gastos')
