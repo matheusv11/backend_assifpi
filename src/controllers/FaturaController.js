@@ -43,7 +43,7 @@ module.exports={
             //GANHOS --------
             const meses_anos= await connection.raw(`
                 SELECT DISTINCT substr(data_criacao${varchar}, 1, 7) as meses_anos from faturas
-                where renovada = true AND substr(data_criacao${varchar}, 1, 4) like "${ano}"
+                where renovada = true AND substr(data_criacao${varchar}, 1, 4) like ${ano}${varchar}
                 ORDER BY substr(data_criacao${varchar}, 6,2) ASC 
             `)
             // .select(connection.raw(`DISTINCT (substr(data_criacao${varchar}, 1, 7)) as meses_anos from faturas ORDER BY id`))
@@ -64,7 +64,7 @@ module.exports={
             //GASTOS --------
             const meses_gastos=  await connection.raw(`
             SELECT DISTINCT substr(data${varchar}, 1, 7) as meses_gastos from gastos
-            where substr(data${varchar},1,4) like "${ano}"
+            where substr(data${varchar},1,4) like ${ano}${varchar}
             ORDER BY substr(data${varchar}, 6,2) ASC 
         `)
             // const meses_gastos= await connection('gastos')
