@@ -136,6 +136,19 @@ module.exports={
             }
         ],
 
+        payment_methods: {
+            // "excluded_payment_methods": [
+            //     {
+            //         "id": "master"
+            //     }
+            // ],
+            // "excluded_payment_types": [
+            //     {
+            //         "id": "ticket"
+            //     }
+            // ],
+            installments: 1
+        },
         external_reference: `${socio_id}-${id}`,
         back_urls: {
             success: "https://frontend-assifpi.herokuapp.com/perfil",
