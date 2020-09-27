@@ -33,7 +33,7 @@ module.exports={
                 descricao,
                 anexo: req.files.anexo ? req.files.anexo[0].filename : null,
                 imagens: req.files.imagens ? req.files.imagens.map((img)=>{
-                    return img.filename
+                    return JSON.parse(img.filename)
                 }) : null
         })
 
