@@ -24,7 +24,8 @@ module.exports={
 
     async create(req,res){
         const {data,hora,local,titulo, descricao}=req.body;
-        
+
+
         await connection('eventos').insert({
                 data: !data ? null : data,  //Mudar
                 hora: !hora ? null : hora,
@@ -32,9 +33,9 @@ module.exports={
                 titulo,
                 descricao,
                 anexo: req.files.anexo ? req.files.anexo[0].filename : null,
-                imagens: req.files.imagens ? req.files.imagens.map((img)=>{
-                    return JSON.parse(img.filename)
-                }) : null
+                imagens: req.files.imagens ? JSON.parse(req.files.imagens.map((img)=>{
+                    return img.filename
+                })) : null
         })
 
         const emails= await connection('socios').where('confirmado',1).select('email');
