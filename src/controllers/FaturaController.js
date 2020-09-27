@@ -237,7 +237,10 @@ module.exports={
             quantity: 1,
             }
         ],
+        payment_methods: {
 
+            installments: 1
+        },
         external_reference: `${atrasadas[0].socio_id}-payall`,
         back_urls: {
             success: "https://frontend-assifpi.herokuapp.com",

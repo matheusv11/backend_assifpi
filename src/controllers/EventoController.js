@@ -27,7 +27,7 @@ module.exports={
         
         await connection('eventos').insert({
                 data: !data ? null : data,  //Mudar
-                hora,
+                hora: !hora ? null : hora,
                 local,
                 titulo,
                 descricao,
