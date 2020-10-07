@@ -25,7 +25,8 @@ module.exports={
     async create(req,res){
         const {data,hora,local,titulo, descricao}=req.body;
 
-
+        // console.log(req.files.imagens);
+        
         await connection('eventos').insert({
                 data: !data ? null : data,  //Mudar
                 hora: !hora ? null : hora,
@@ -34,7 +35,7 @@ module.exports={
                 descricao,
                 anexo: req.files.anexo ? req.files.anexo[0].filename : null,
                 imagens: req.files.imagens ? req.files.imagens.map((img)=>{
-                    return img.filename
+                    return img.filename.toString()
                 }) : null
         })
 

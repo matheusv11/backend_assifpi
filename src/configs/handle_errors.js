@@ -9,7 +9,7 @@ module.exports= (err, req,res,next)=>{
                 // console.log('Index: ', index)
                 // console.log(dados[index])
                 dados.map((files)=>{
-                    fs.unlinkSync(path.resolve(__dirname, `../documents/${files.filename}`))
+                    fs.unlinkSync(path.resolve(__dirname, `../documents/${files.filename}`))//Caso tenha dois campos e 1 não passe(ficar preso no cb) pode dar erro no server  
                 })
 
             })
