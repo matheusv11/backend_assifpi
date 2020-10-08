@@ -85,6 +85,7 @@ module.exports={
         // if(dependente_id[0]){
         //     // console.log(array);
         // }
+        
         const array= dependente_id.map((dados)=>{ return dados.id});
 
         //Poderia ter Delete com join e trx
