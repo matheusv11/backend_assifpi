@@ -80,14 +80,18 @@ module.exports={
     
     async delete(req,res){
         const socio_id= req.params.id;
-        const [dependente_id]= await connection('dependentes').where('socio_id', socio_id).select('id as dependente_id');
-        console.log(dependente_id)
+        const dependente_id= await connection('dependentes').where('socio_id', socio_id).select('id');
+
+        // if(dependente_id[0]){
+        //     // console.log(array);
+        // }
+        const array= dependente_id.map((dados)=>{ return dados.id});
 
         //Poderia ter Delete com join e trx
         await connection('faturas').where('socio_id', socio_id).delete();
-        await connection('carteiras').whereIn('dependente_id', dependentes).delete();
+        await connection('carteiras').whereIn('dependente_id', array).delete();            
         await connection('carteiras').where('socio_id', socio_id).delete();
-        await connection('documentos').whereIn('dependente_id', dependentes).delete();
+        await connection('documentos').whereIn('dependente_id', array).delete();
         await connection('documentos').where('socio_id', socio_id).delete();
         await connection('agenda').where('socio_id', socio_id).delete();
         await connection('dependentes').where('socio_id', socio_id).delete();
