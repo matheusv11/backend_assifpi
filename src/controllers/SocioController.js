@@ -81,6 +81,7 @@ module.exports={
     async delete(req,res){
         const socio_id= req.params.id;
         const dependentes= await connection('dependentes').where('socio_id', socio_id).select('id');
+        console.log(dependentes)
         //Poderia ter Delete com join e trx
         await connection('faturas').where('socio_id', socio_id).delete();
         await connection('carteiras').whereIn('dependente_id', dependentes).delete();
