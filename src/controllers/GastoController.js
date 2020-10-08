@@ -1,4 +1,5 @@
 const connection= require('../database/connection');
+const log= require('../utils/log');
 
 module.exports={
     async index(req,res){
@@ -11,7 +12,7 @@ module.exports={
         const {descricao, valor, data}=req.body;
         
         await connection('gastos').insert({descricao, valor, data})
-
+        log(`adicionou um gasto`, req.adm_id);
         return res.status(200).send({message: 'Gasto cadastrado com sucesso'})
     },
 
@@ -20,7 +21,7 @@ module.exports={
         const id= req.params.id;
 
         await connection('gastos').where('id', id).delete();
-        //Logs  
+        log(`deletou um gasto`, req.adm_id);  
         return res.status(200).send({message: 'Gasto deletado com sucesso'})
     }
 }

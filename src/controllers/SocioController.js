@@ -81,7 +81,7 @@ module.exports={
     async delete(req,res){
         const socio_id= req.params.id;
         const dependente_id= await connection('dependentes').where('socio_id', socio_id).select('id');
-
+        const {nome}= await connection('socios').where('id', socio_id).select('nome').first();
         // if(dependente_id[0]){
         //     // console.log(array);
         // }
@@ -98,7 +98,7 @@ module.exports={
         await connection('dependentes').where('socio_id', socio_id).delete();
         await connection('socios').where('id', socio_id).delete();
 
-        log(`Deletou o socio de id=${socio_id}`, req.adm_id);
+        log(`deletou o socio ${nome}`, req.adm_id);
 
         return res.status(200).send({message: 'Socio deletado com sucesso'});
 
@@ -129,7 +129,7 @@ module.exports={
     async confirm_socio(req,res){
         const socio_id=req.params.id;
         const presencial= req.query.presencial;
-        const response= await connection('socios').where('id', socio_id).select('cpf','confirmado','email').first();
+        const response= await connection('socios').where('id', socio_id).select('cpf','confirmado','email','nome').first();
 
         if(response.confirmado==1){
             return res.status(401).send({message: 'Este socio ja foi confirmado'});
@@ -147,8 +147,8 @@ module.exports={
             })
             
         }
-        // sendmail.confirm(response.email);
-        log(`Confirmou o socio de id=${socio_id}`, req.adm_id);
+        sendmail.confirm(response.email);
+        log(`confirmou o socio ${response.nome}`, req.adm_id);
 
         return res.status(200).send({message: 'Socio confirmado com sucesso'});
     },

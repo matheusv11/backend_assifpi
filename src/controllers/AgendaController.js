@@ -1,5 +1,6 @@
 const connection= require('../database/connection');
 const sendmail= require('../utils/mailer');
+const log= require('../utils/log');
 
 module.exports={
     
@@ -36,6 +37,8 @@ module.exports={
 
         sendmail.agenda_confirmado(email);
 
+        log(`aprovou uma agenda`, req.adm_id);
+
         return res.status(200).send({message: 'Agenda confirmada com sucesso'});
     },
 
@@ -52,6 +55,7 @@ module.exports={
        
         sendmail.agenda_recusado(email);
 
+        log(`rejeitou uma agenda`, req.adm_id);
         return res.status(200).send({message: 'Agenda recusada com sucesso'})
     },
 

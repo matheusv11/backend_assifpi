@@ -2,7 +2,8 @@ const connection= require('../database/connection');
 const axios= require('axios');
 const mercadopago = require ('mercadopago');
 const WrapperPromise= require('../utils/WrapperPromise');
-const varchar= process.env.NODE_ENV=="production" ? '::varchar' : ''
+const varchar= process.env.NODE_ENV=="production" ? '::varchar' : '';
+const log= require('../utils/log');
 
 module.exports={
     async index(req,res){
@@ -254,7 +255,7 @@ module.exports={
 
         mercadopago.preferences.create(preference)
         .then(function(response){
-            // return res.json({mercadopago: response, faturas: atrasadas})
+            log(`criou um pagamento personalizado para o socio ${atrasadas[0].nome}`, req.adm_id)
             return res.json(response)
         }).catch(function(error){
             console.log(error);

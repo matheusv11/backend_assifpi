@@ -66,7 +66,6 @@ module.exports={
 
     },
 
-
     async index_carteira_socio(req,res){
         const socio_id= req.socio_id;
 
@@ -82,36 +81,31 @@ module.exports={
         const response= await connection('carteiras').where('dependente_id', dependente_id)
         .select('status').first();
 
-        // const dependente_id= req.params.id;
-        // //Pegar estado da carteira de todos dependentes x
-        // const response= await connection('carteiras').where('dependente_id', dependente_id)
-        // .select('status').first();
-
-
         return res.status(200).send(response);
     },
 
     async change_carteira_socio(req,res){
         const socio_id= req.params.id;
-        const {email}= await connection('socios').where('id', socio_id).select('email').first();
+        const {email,nome}= await connection('socios').where('id', socio_id).select('email','nome').first();
 
         await connection('carteiras').where('socio_id', socio_id).update({status:'confeccionada'})
         
         sendmail.carteira(email);
 
-        log(`Alterou os status da carteira do socio de id=${socio_id}`, req.adm_id)
+        log(`confirmou a carteira do socio ${nome}`, req.adm_id)
         
         return res.status(200).send({message: 'Confirmado a confeccao da carteira do socio'});
     },
 
     async change_carteira_dependente(req,res){
         const dependente_id= req.params.id;
-        const {email}= await connection('dependentes').where('id',dependente_id).select('email').first()
+        const {email,nome}= await connection('dependentes').where('id',dependente_id).select('email','nome').first()
 
         await connection('carteiras').where('dependente_id', dependente_id).update({status:'confeccionada'})
         
         sendmail.carteira(email);
-        log(`Alterou os status da carteira do dependente de id=${dependente_id}`, req.adm_id)
+
+        log(`confirmou a carteira do dependente ${nome}`, req.adm_id);
 
         return res.status(200).send({message: 'Confirmado a confeccao da carteira do dependente'});
     }

@@ -5,7 +5,7 @@ exports.up = function(knex) {
     table.date('data');
     table.time('hora');
     table.string('atividade');
-    table.integer('adm_id').references('id').inTable('administradores');
+    // table.integer('adm_id').references('id').inTable('administradores');
     //Incompleto
   });
 };

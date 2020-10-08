@@ -40,7 +40,7 @@ module.exports={
             expiresIn:'240min'
         });
 
-        log('Entrou no sistema', response.id);
+        log(`entrou no sistema`, response.id);
 
         return res.status(200).send({token});
 

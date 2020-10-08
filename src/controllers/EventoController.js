@@ -43,7 +43,7 @@ module.exports={
             return dados.email
         }));
         
-        log('Criou um evento', req.adm_id);
+        log('criou um evento', req.adm_id);
 
         return res.status(200).send({message: 'evento criado com sucesso'})
         //Criar evento
@@ -56,7 +56,7 @@ module.exports={
         const {id}= req.params;
         await connection('eventos').where('id', id).delete();
 
-        log('Deletou um evento', req.adm_id);
+        log('deletou um evento', req.adm_id);
 
         return res.status(200).send({message: 'Evento deletado com sucesso'})
     

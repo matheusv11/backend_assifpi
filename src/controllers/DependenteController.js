@@ -74,10 +74,11 @@ module.exports={
 
     async confirm_dependente(req,res){
         const dependente_id=req.params.id;
-
+        const {nome}= await connection('dependentes').where('id', dependente_id).select('nome');
+    
         await connection('dependentes').where('id', dependente_id).update('confirmado', true);
 
-        log(`Confirmou o dependente de id=${dependente_id}`, req.adm_id);
+        log(`confirmou o dependente ${nome}`, req.adm_id);
 
         return res.status(200).send({message: 'Dependente confirmado com sucesso'});
     },
@@ -108,10 +109,12 @@ module.exports={
     async deleteDependente(req,res){
         //Log
         const dependente_id= req.params.id;
-
+        const {nome}= await connection('dependentes').where('id', dependente_id).select('nome');
+        
         await connection('dependentes').where('id', dependente_id).delete();
 
-        log(`Deletou o dependente de id ${dependente_id}`, req.adm_id);
+        log(`deletou o dependente ${nome}`, req.adm_id);
+
         return res.status(200).send({message: 'Dependente deletado com sucesso'})
     }
 }

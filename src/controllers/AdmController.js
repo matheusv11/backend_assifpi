@@ -27,7 +27,7 @@ module.exports={
             senha: hashed
         })
 
-        log('Cadastrou um adm', req.adm_id);
+        log(`cadastrou o administrador ${nome}`, req.adm_id);
 
         return res.status(200).send({message: 'Administrador cadastrado com sucesso'})
     },
@@ -35,10 +35,11 @@ module.exports={
     async delete(req,res){
         //Deletar adm
         const id= req.params.id;
-    
+        const {adm}= await connection('administradores').where('id',id).select('nome as adm').first();        
+
         await connection('administradores').where('id', id).delete();
-        
-        log(`Deletou o adm de id=${id}`, req.adm_id);
+
+        log(`deletou o administrador ${adm}`, req.adm_id);
 
         return res.status(200).send({message: 'Administrador deletado com sucesso'})
     }
