@@ -82,7 +82,7 @@ module.exports={
         const socio_id= req.params.id;
         const dependentes= await connection('dependentes').where('socio_id', socio_id).select('id');
         //Poderia ter Delete com join e trx
-        await connection('documentos').whereIn('dependente_id', dependentes).where('socio_id', socio_id).delete();
+        await connection('documentos').whereIn('dependente_id', dependentes).andWhere('socio_id', socio_id).delete();
         await connection('faturas').where('socio_id', socio_id).delete();
         await connection('carteiras').whereIn('dependente_id', dependentes).andWhere('socio_id', socio_id).delete();
         await connection('dependentes').where('socio_id', socio_id).delete();
@@ -100,7 +100,7 @@ module.exports={
         const [total]= await connection('socios').count('id as count');//Tira o array
 
         const response= await connection('socios')
-        .join('documentos','documentos.socio_id', '=', 'socios.id')
+        .leftJoin('documentos','documentos.socio_id', '=', 'socios.id')
         .where('socios.cpf', 'like', `%${cpf}%`)
         .select('documentos.id', 'socios.nome', 'socios.cpf', 'socios.endereco', 'socios.rg',
          'documentos.comprovante', 'socios.email', 'socios.id as socio_id', 'socios.confirmado', 
