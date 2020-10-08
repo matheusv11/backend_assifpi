@@ -12,10 +12,10 @@ const transporter= nodemailer.createTransport({
 
 const error= (err,data)=>{
     if(err){
-        // console.log('Fail to send email: ', err);
+        console.log('Fail to send email: ', err);
     }
     else{
-        // console.log('Email delivered!!: ', data);
+        console.log('Email delivered!!: ', data);
     }
 }
 
