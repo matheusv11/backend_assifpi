@@ -85,6 +85,7 @@ module.exports={
         await connection('documentos').whereIn('dependente_id', dependentes).andWhere('socio_id', socio_id).delete();
         await connection('faturas').where('socio_id', socio_id).delete();
         await connection('carteiras').whereIn('dependente_id', dependentes).andWhere('socio_id', socio_id).delete();
+        await connection('agenda').where('socio_id', socio_id).delete();
         await connection('dependentes').where('socio_id', socio_id).delete();
         await connection('socios').where('id', socio_id).delete();
 
