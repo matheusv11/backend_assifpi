@@ -82,7 +82,7 @@ module.exports={
         const socio_id= req.params.id;
         //Poderia ter Delete com join e trx
         await connection('documentos').where('socio_id', socio_id).delete();
-        await connection('faturas').where('socio_id', socio_id).andWhere('renovada', 0).delete();
+        await connection('faturas').where('socio_id', socio_id).delete();
         await connection('dependentes').where('socio_id', socio_id).delete();
         await connection('socios').where('id', socio_id).delete();
 
