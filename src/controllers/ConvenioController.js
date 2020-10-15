@@ -23,15 +23,16 @@ module.exports={
                 titulo,descricao,imagem: req.files[0].filename, anexo: req.files[1].filename
             }).returning('id')
             inserted_id=insert;
+        }else{
+            const [insert]= await connection('convenios').insert({
+                titulo,descricao,imagem: req.files[0].filename, anexo: req.files[1].filename
+            }).then(id=>{
+                return id
+            })
+            inserted_id=insert;
         }
 
-        const [insert]= await connection('convenios').insert({
-            titulo,descricao,imagem: req.files[0].filename, anexo: req.files[1].filename
-        }).then(id=>{
-            return id
-        })
-        
-        inserted_id=insert;
+
 
         console.log(inserted_id);
         log(`criou um convenio`, req.adm_id);
