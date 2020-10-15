@@ -11,28 +11,32 @@ module.exports={
 
     async create(req,res){
         const {titulo,descricao}=req.body;
+        let inserted_id=0;
         //Temporario
         if(!req.files[0] || !req.files[1]){
             return res.status(401).send({message: `Preencha os arquivos`})
         } //
 
         
-        // if(process.env.NODE_ENV){
-            // const [insert]= await connection('convenios').insert({
-                // titulo,descricao,imagem: req.files[0].filename, anexo: req.files[1].filename
-            // }).returning('id')
-        // }
+        if(process.env.NODE_ENV){
+            const [insert]= await connection('convenios').insert({
+                titulo,descricao,imagem: req.files[0].filename, anexo: req.files[1].filename
+            }).returning('id')
+            inserted_id=insert;
+        }
 
-        const insert= await connection('convenios').insert({
+        const [insert]= await connection('convenios').insert({
             titulo,descricao,imagem: req.files[0].filename, anexo: req.files[1].filename
         }).then(id=>{
-            console.log(id)
+            return id
         })
+        
+        inserted_id=insert;
 
-        console.log(insert);
+        console.log(inserted_id);
         log(`criou um convenio`, req.adm_id);
 
-        return res.status(200).send({message: 'Convenio criado com sucesso',imagem: req.files[0].filename, anexo: req.files[1].filename}); //Pegar url da imagem pra exibir mas melhorar isso
+        return res.status(200).send({message: 'Convenio criado com sucesso',id:inserted_id, imagem: req.files[0].filename, anexo: req.files[1].filename}); //Pegar url da imagem pra exibir mas melhorar isso
     },
 
     async delete(req,res){
