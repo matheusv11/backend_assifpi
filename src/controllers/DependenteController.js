@@ -66,6 +66,7 @@ module.exports={
         const socio_id= req.socio_id;
         const id= req.params.id;
 
+        await connection('documentos').where('dependente_id', id).delete();
         await connection('dependentes').where('id', id).andWhere('socio_id', socio_id).delete(); //Posso retornar erro caso tente deletar alguem que nao pertence a ele
 
         return res.status(200).send({message: 'Dependente deletado com sucesso'})

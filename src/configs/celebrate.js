@@ -45,7 +45,7 @@ module.exports={
             email: Joi.string().email().required(),
             // cpf: Joi.string().length(11).pattern(/^[0-9]+$/).required(),
             cpf: Joi.string().length(14).required(),
-            rg: Joi.allow(),
+            rg: Joi.required(),
             endereco: Joi.string().max(64).required(),
             telefones: Joi.string().required(),
             comprovante: Joi.allow()
