@@ -17,7 +17,7 @@ module.exports={
             return res.status(401).send({message: `Preencha os arquivos`})
         } //
 
-        
+        //Codigo muito feio e verboso
         if(process.env.NODE_ENV){
             const [insert]= await connection('convenios').insert({
                 titulo,descricao,imagem: req.files[0].filename, anexo: req.files[1].filename
@@ -32,9 +32,6 @@ module.exports={
             inserted_id=insert;
         }
 
-
-
-        console.log(inserted_id);
         log(`criou um convenio`, req.adm_id);
 
         return res.status(200).send({message: 'Convenio criado com sucesso',id:inserted_id, imagem: req.files[0].filename, anexo: req.files[1].filename}); //Pegar url da imagem pra exibir mas melhorar isso
