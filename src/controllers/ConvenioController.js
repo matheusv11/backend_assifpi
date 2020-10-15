@@ -19,7 +19,7 @@ module.exports={
         const insert= await connection('convenios').insert({
             titulo,descricao,imagem: req.files[0].filename, anexo: req.files[1].filename
         }).then(dados=>{
-            return dados.id;
+            return dados
         })
 
         console.log(insert);
