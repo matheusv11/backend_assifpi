@@ -16,10 +16,13 @@ module.exports={
         } //
 
         
-        await connection('convenios').insert({
+        const insert= await connection('convenios').insert({
             titulo,descricao,imagem: req.files[0].filename, anexo: req.files[1].filename
+        }).then(dados=>{
+            return dados.id;
         })
 
+        console.log(insert);
         log(`criou um convenio`, req.adm_id);
 
         return res.status(200).send({message: 'Convenio criado com sucesso',imagem: req.files[0].filename, anexo: req.files[1].filename}); //Pegar url da imagem pra exibir mas melhorar isso
