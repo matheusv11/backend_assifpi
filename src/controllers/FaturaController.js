@@ -28,8 +28,8 @@ module.exports={
         return new Promise(async resolve=>{
             const {ano="2019"}= req.query;
 
-            const anos= await connection('faturas').where('renovada', 1)
-            .select(connection.raw(`substr(data_criacao${varchar}, 1, 4) as ano`)) 
+            const anos= await connection('ganhos')
+            .select(connection.raw(`substr(data${varchar}, 1, 4) as ano`)) 
             .distinct();
             
             const anos_gastos= await connection('gastos')
@@ -39,39 +39,22 @@ module.exports={
             const intersection= anos.concat(anos_gastos); 
 
             const filter_anos = [...new Map(intersection.map(obj => [obj.ano, obj])).values()]
-            .sort((a,b)=> {return a.ano-b.ano});
+            .sort((a,b)=> {return a.ano-b.ano}); //Re-achar o link
 
-            //GANHOS --------
-            // const meses_anos= await connection.raw(`
-            //     SELECT (substr(data_criacao${varchar}, 1, 7)) as meses_anos from faturas
-            //     where renovada = true AND substr(data_criacao${varchar}, 1, 4) like ${ano}${varchar}
-            //     GROUP BY data_criacao
-            //     ORDER BY (substr(data_criacao${varchar}, 6,2)) ASC 
-            // `)
-            const meses_anos= await connection('faturas')
-            .where('renovada', 1)
-            .andWhere(connection.raw(`substr(data_criacao${varchar}, 1, 4)`),ano) //Selecionar o ano
-            .orderBy(connection.raw(`substr(data_criacao${varchar}, 4, 2)`), 'asc') //Muito bacana //Alterar depois nos outros
-            .groupBy('data_criacao') //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
-            .select(connection.raw(`substr(data_criacao${varchar}, 1, 7) as meses_anos`)) //Ou object values pra remover o objeto
+            const meses_anos= await connection('ganhos')
+            .andWhere(connection.raw(`substr(data${varchar}, 1, 4)`),ano) //Selecionar o ano
+            .orderBy(connection.raw(`substr(data${varchar}, 4, 2)`), 'asc') //Muito bacana //Alterar depois nos outros
+            .groupBy('data') //OU SELECT PELO MES //Pode encapsular pro split teste slice //Poderia funcionar pras data talvez
+            .select(connection.raw(`substr(data${varchar}, 1, 7) as meses_anos`)) //Ou object values pra remover o objeto
 
             const soma_ganhos= meses_anos.map(async datas=>{
 
-                const [ok]= await connection('faturas')
-                .where(connection.raw(`substr(data_criacao${varchar}, 1, 7)`),datas.meses_anos)
-                .sum(`recebido as ${datas.meses_anos}`)
+                const [ok]= await connection('ganhos')
+                .where(connection.raw(`substr(data${varchar}, 1, 7)`),datas.meses_anos)
+                .sum(`valor as ${datas.meses_anos}`)
 
                 return ok
             })
-
-
-            //GASTOS --------
-            // const meses_gastos=  await connection.raw(`
-            // SELECT (substr(data${varchar}, 1, 7)) as meses_gastos from gastos
-            // where substr(data${varchar},1,4) like ${ano}${varchar}
-            // GROUP BY data
-            // ORDER BY (substr(data${varchar}, 6,2)) ASC 
-            // `)
             
             const meses_gastos= await connection('gastos')
             .select(connection.raw(`substr(data${varchar}, 1, 7)  as meses_gastos`)) 
@@ -183,18 +166,25 @@ module.exports={
             let parts= external.split('-')
 
             if(dados.data.status=="approved" && parts[1]=="payall"){
-                await connection('faturas').where('socio_id', parts[0]).andWhere('faturas.status','pending').andWhere('faturas.renovada',1).update({ //Rejetiada
+                await connection('faturas').where('socio_id', parts[0]).whereIn('faturas.status',['pending','rejected']).andWhere('faturas.renovada',1).update({ //Rejetiada
                     status: dados.data.status, boleto: dados.data.transaction_details.external_resource_url,
-                    compra_id: dados.data.id, recebido: dados.data.transaction_details.net_received_amount
+                    compra_id: dados.data.id
                 })
 
                 return res.status(200).send();
             }
-            
+
             await connection('faturas').where('socio_id', parts[0]).andWhere('id', parts[1]).update({
                 status: dados.data.status, boleto: dados.data.transaction_details.external_resource_url,
-                compra_id: dados.data.id, recebido: dados.data.transaction_details.net_received_amount//Valor com os 5%
+                compra_id: dados.data.id
             });
+
+            if(dados.data.status=="approved"){
+                await connection('ganhos').insert({
+                    valor: dados.data.transaction_details.net_received_amount, 
+                    data: new Date().toISOString().substr(0,10)
+                })
+            }
             
             return res.status(200).send();
 
@@ -215,8 +205,9 @@ module.exports={
        .join('faturas', 'faturas.socio_id','=','socios.id')
        .where('socios.cpf',cpf)
        .andWhere('socios.pagamento','mercadopago')
-       .andWhere('faturas.status','pending')
        .andWhere('faturas.renovada', 1)
+       .whereIn('faturas.status',['pending','rejected'])
+
        .select('socios.id as socio_id','socios.nome','socios.rg','socios.cpf','faturas.status','faturas.data_criacao','faturas.data_vencimento')
     //    .first()
         
