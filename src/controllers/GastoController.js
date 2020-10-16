@@ -10,10 +10,20 @@ module.exports={
 
     async create(req,res){
         const {descricao, valor, data}=req.body;
-        
-        await connection('gastos').insert({descricao, valor, data})
+        let inserted_id=0;
+
+        if(process.env.NODE_ENV){
+            const [insert]= await connection('gastos').insert({descricao, valor, data}).returning('id');
+            inserted_id=insert;
+        }else{
+            const [insert]= await connection('gastos').insert({descricao, valor, data}).then(id=>{
+                return id
+            })
+            inserted_id=insert;
+        }
+
         log(`adicionou um gasto`, req.adm_id);
-        return res.status(200).send({message: 'Gasto cadastrado com sucesso'})
+        return res.status(200).send({message: 'Gasto cadastrado com sucesso', id: inserted_id})
     },
 
 
