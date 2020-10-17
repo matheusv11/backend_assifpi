@@ -4,6 +4,7 @@ const bcrypt= require('bcrypt');
 const crypto= require('crypto');
 const sendmail= require('../utils/mailer');
 const log= require('../utils/log');
+const deleteFiles= require('../utils/deleteFiles');
 
 module.exports={
     
@@ -80,15 +81,21 @@ module.exports={
     
     async delete(req,res){
         const socio_id= req.params.id;
-        const dependente_id= await connection('dependentes').where('socio_id', socio_id).select('id');
-        const {nome}= await connection('socios').where('id', socio_id).select('nome').first();
+        const dependente_id= await connection('dependentes').where('socio_id', socio_id).select('id'); //Arrumar um jeito de remover o objeto nesse array
+        const {nome}= await connection('socios').where('id', socio_id).select('nome').first(); //Dar erro caso nao exista
         // if(dependente_id[0]){
         //     // console.log(array);
         // }
         
         const array= dependente_id.map((dados)=>{ return dados.id});
 
+        const documents= await connection('documentos')
+        .where('socio_id', socio_id)
+        .orWhereIn('dependente_id', array)
+        .select('rg_frente','rg_verso','cpf','comprovante','comprovante_parentesco'); //Se fossem tabelas diferentes seria melhor
+
         //Poderia ter Delete com join e trx
+
         await connection('faturas').where('socio_id', socio_id).delete();
         await connection('carteiras').whereIn('dependente_id', array).delete();            
         await connection('carteiras').where('socio_id', socio_id).delete();
@@ -98,6 +105,7 @@ module.exports={
         await connection('dependentes').where('socio_id', socio_id).delete();
         await connection('socios').where('id', socio_id).delete();
 
+        deleteFiles(documents);
         log(`deletou o socio ${nome}`, req.adm_id);
 
         return res.status(200).send({message: 'Socio deletado com sucesso'});

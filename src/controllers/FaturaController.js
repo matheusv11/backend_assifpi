@@ -115,7 +115,7 @@ module.exports={
         items: [
             {
             title: 'Produto de teste em producao',
-            unit_price: diffDays>=7 ? 10 : 5,
+            unit_price: diffDays>=7 ? 70 : 62,
             quantity: 1,
             }
         ],

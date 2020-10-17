@@ -1,6 +1,6 @@
-const { returning } = require('../database/connection');
 const connection= require('../database/connection');
 const log= require('../utils/log');
+const deleteFile= require('../utils/deleteFiles');
 
 module.exports={
     async index(req,res){
@@ -39,9 +39,11 @@ module.exports={
 
     async delete(req,res){
         const convenio_id= req.params.id;
+        const documents= await connection('convenios').where('id', convenio_id).select('imagem','anexo');//Por questoes do deleteFiles nao usei o first
 
         await connection('convenios').where('id', convenio_id).delete();
 
+        deleteFile(documents);
         log(`deletou um convenio`, req.adm_id);
 
         return res.status(200).send({message: 'Convenio deletado com sucesso'});

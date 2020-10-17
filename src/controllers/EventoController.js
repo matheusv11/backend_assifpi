@@ -1,5 +1,6 @@
 //Tabela de eventos
 const connection = require("../database/connection");
+const deleteFiles = require("../utils/deleteFiles");
 const log= require('../utils/log');
 const sendmail= require('../utils/mailer');
 
@@ -50,12 +51,15 @@ module.exports={
     },
     
     async delete(req,res){
-        //Deletar evento 
         //Pode verificar se o evento nao existir nao deletar
         //If return 0 nao existe
         const {id}= req.params;
-        await connection('eventos').where('id', id).delete();
 
+        const documents= await connection('eventos').where('id',id).select('imagens','anexo');
+        
+        await connection('eventos').where('id', id).delete();
+        
+        deleteFiles(documents);
         log('deletou um evento', req.adm_id);
 
         return res.status(200).send({message: 'Evento deletado com sucesso'})
