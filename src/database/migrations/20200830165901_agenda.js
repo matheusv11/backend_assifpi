@@ -7,7 +7,14 @@ exports.up = function(knex) {
     table.time('hora_inicio').notNullable();
     table.time('hora_fim').notNullable();
     table.string('participantes').notNullable();
-    table.string('socio_id').references('id').inTable('socios');
+
+    table.string('socio_id')
+    .notNullable()
+    .references('id')
+    .inTable('socios')
+    .onUpdate('CASCADE')
+    .onDelete('CASCADE')
+
     table.string('status').defaultTo('esperando');
   });
 };

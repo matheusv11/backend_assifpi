@@ -2,7 +2,12 @@
 exports.up = function(knex) {
     return knex.schema.createTable('faturas', table=>{
         table.increments();
-        table.string('socio_id').references('id').inTable('socios')
+        table.string('socio_id')
+        .references('id')
+        .inTable('socios')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+        
         table.string('compra_id');
         table.string('cpf');
         table.string('status');

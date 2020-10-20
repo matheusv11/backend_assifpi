@@ -2,6 +2,7 @@
 const connection= require('../database/connection');
 const crypto= require('crypto');
 const log= require('../utils/log');
+const deleteFiles= require('../utils/deleteFiles');
 
 module.exports={
 
@@ -66,9 +67,16 @@ module.exports={
         const socio_id= req.socio_id;
         const id= req.params.id;
 
-        await connection('documentos').where('dependente_id', id).delete();
+        const files= await connection('documentos')
+        .where('dependente_id',id)
+        .select('comprovante_parentesco')
+        
+
         await connection('dependentes').where('id', id).andWhere('socio_id', socio_id).delete(); //Posso retornar erro caso tente deletar alguem que nao pertence a ele
 
+        //Poderia ter um ;then para quebrar assim nao precisaria de usar objetos no deleteFiles -> Porem fica menos verboso o controller desta maneira atual
+        deleteFiles(files); //Dar erro se tentar deletar alguem inexistente
+        
         return res.status(200).send({message: 'Dependente deletado com sucesso'})
         //Deletar depedente de um socio
     },

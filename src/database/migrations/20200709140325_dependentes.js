@@ -8,7 +8,14 @@ exports.up = function(knex) {
         table.string('rg').notNullable();
         table.string('endereco').notNullable();
         table.string('telefones').notNullable();
-        table.string('socio_id').references('id').inTable('socios');
+        
+        table.string('socio_id')
+        .notNullable()
+        .references('id')
+        .inTable('socios')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+
         table.boolean('confirmado').defaultTo(false);
       });
 };
