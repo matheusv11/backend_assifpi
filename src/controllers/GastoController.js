@@ -3,7 +3,18 @@ const log= require('../utils/log');
 
 module.exports={
     async index(req,res){
-        const response= await connection('gastos').select('*')
+
+        const {page=1}=req.query;
+
+        const [total]= await connection('gastos').count('id as count');//Tira o array //Or [{total}]
+
+        const response= await connection('gastos')
+        .select('*')
+        .limit(5)
+        .offset((page-1)*5)
+        .orderBy('id', 'desc');
+
+        res.header('total-count', total['count']);
 
         return res.status(200).send(response);
     },

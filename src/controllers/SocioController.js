@@ -108,7 +108,7 @@ module.exports={
         deleteFiles(documents);
         log(`deletou o socio ${nome}`, req.adm_id);
 
-        return res.status(200).send({message: 'Socio deletado com sucesso'});
+        return res.status(200).send({message: 'Socio deletado com sucesso. Todo conteúdo relacionado a este sócio será removido também.'});
 
     },
 

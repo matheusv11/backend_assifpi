@@ -7,7 +7,7 @@ const sendmail= require('../utils/mailer');
 module.exports={
     
     async index(req,res){
-        //Listar eventos
+
         const {page=1}=req.query;
 
         const [total]= await connection('eventos').count('id as count');//Tira o array
