@@ -44,6 +44,7 @@ module.exports={
         await connection('convenios').where('id', convenio_id).delete();
 
         deleteFile(documents);
+
         log(`deletou um convenio`, req.adm_id);
 
         return res.status(200).send({message: 'Convenio deletado com sucesso'});

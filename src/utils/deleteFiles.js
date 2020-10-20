@@ -12,7 +12,10 @@ module.exports= (files)=>{
             let isNull= dados!==null;
             // let newDados= isNull && dados;
             if(isNull){
-                fs.unlinkSync(path.resolve(__dirname, `../documents/${dados}`));
+                dados.split(',').map(files=>{
+                    fs.unlinkSync(path.resolve(__dirname, `../documents/${files}`));
+                })
+                // fs.unlinkSync(path.resolve(__dirname, `../documents/${dados}`));
             }
         })
     })

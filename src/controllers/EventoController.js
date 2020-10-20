@@ -55,7 +55,7 @@ module.exports={
         //If return 0 nao existe
         const {id}= req.params;
 
-        const documents= await connection('eventos').where('id',id).select('imagens','anexo');
+        const documents= await connection('eventos').where('id',id).select('imagens','anexo'); //Verificar
         
         await connection('eventos').where('id', id).delete();
         
