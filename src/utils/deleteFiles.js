@@ -1,5 +1,6 @@
 const fs= require('fs');
 const path= require('path');
+const {Dropbox}= require('dropbox');
 
 module.exports= (files)=>{
     //files && //Caso tenha ele percorre para evitar erros
