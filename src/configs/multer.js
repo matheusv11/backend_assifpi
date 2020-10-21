@@ -1,9 +1,10 @@
 const multer= require('multer');
 const path= require('path');
 const crypto= require('crypto');
+const dropbox= require('./dropbox');
 
-module.exports={
-    storage:multer.diskStorage({
+const storageType={
+    local: multer.diskStorage({
         destination:(req,res,cb)=>{
             cb(null,path.resolve(__dirname,'../documents'))
         },
@@ -14,6 +15,14 @@ module.exports={
         }
 
     }),
+
+    dropbox: dropbox()
+    
+}
+
+
+module.exports={
+    storage: storageType[process.env.NODE_ENV ? 'dropbox' : 'local'],
 
     limits:{
         fileSize: 1048576,//bytes 
