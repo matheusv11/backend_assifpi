@@ -11,7 +11,7 @@ module.exports= (files)=>{
             if(isNull){
                 dados.split(',').map(files=>{
                     process.env.APP_DROPBOX_TOKEN ?
-                    dropbox.connection.filesDeleteV2({path: `/${files.split('/')[1].replace('?raw=1','')}`})
+                    dropbox.connection.filesDeleteV2({path: `/imagens/${files.split('/')[1].replace('?raw=1','')}`})
                     :
                     fs.unlinkSync(path.resolve(__dirname, `../documents/${files}`));
                 })
