@@ -16,7 +16,7 @@ class DropboxStorage {
 
     this.dropbox.filesUpload({ path: '/imagens' + hash, contents: file.stream }).then(response => {
 
-        this.dropbox.sharingCreateSharedLinkWithSettings({ path: '/imagens' + hash}).then((dados)=>{
+        this.dropbox.sharingCreateSharedLinkWithSettings({ path: '/imagens/' + hash}).then((dados)=>{
           const substring= dados.result.url.substr(26).replace('dl=0','raw=1');
           cb(null,{ filename: substring});
         }).catch(error=>{
