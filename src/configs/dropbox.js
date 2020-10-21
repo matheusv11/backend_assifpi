@@ -11,13 +11,13 @@ class DropboxStorage {
   }
 
   _handleFile(req,file,cb) {
-    console.log('Arquivos', file);
+    // console.log('Arquivos', file);
     const hash=`${crypto.randomBytes(8).toString('hex')}-${file.originalname.replace(/(?:\.(?![^.]+$)|[^\w.])+/g, "-")}`
 
     this.dropbox.filesUpload({ path: '/imagens/' + hash, contents: file.stream }).then(response => {
 
         this.dropbox.sharingCreateSharedLinkWithSettings({ path: '/imagens/' + hash}).then((dados)=>{
-          const substring= dados.result.url.substr(26).replace('dl=0','raw=1');
+          const substring= dados.result.url.substr(26).replace('dl=0','raw=1'); //URL= https://www.dropbox.com/s/
           cb(null,{ filename: substring});
         }).catch(error=>{
           console.log('Erro do link: ', error)
