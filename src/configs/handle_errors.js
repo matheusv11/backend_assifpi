@@ -11,7 +11,7 @@ module.exports= (err, req,res,next)=>{
                 // console.log(dados[index])
                 dados.map((files)=>{
                     process.env.APP_DROPBOX_TOKEN ? 
-                    dropbox.connection.filesDeleteV2({path: `/imagens/${files.filename.split('/')[1].replace('?raw=1','')}`})
+                    dropbox.connection.filesDeleteV2({path: `/documentos/${files.filename.split('/')[1].replace('?raw=1','')}`})
                     :
                     fs.unlinkSync(path.resolve(__dirname, `../documents/${files.filename}`))//Caso tenha dois campos e 1 não passe(ficar preso no cb) pode dar erro no server  
                 })

@@ -14,9 +14,9 @@ class DropboxStorage {
     // console.log('Arquivos', file);
     const hash=`${crypto.randomBytes(8).toString('hex')}-${file.originalname.replace(/(?:\.(?![^.]+$)|[^\w.])+/g, "-")}`
 
-    this.dropbox.filesUpload({ path: '/imagens/' + hash, contents: file.stream }).then(response => {
+    this.dropbox.filesUpload({ path: '/documentos/' + hash, contents: file.stream }).then(response => {
 
-        this.dropbox.sharingCreateSharedLinkWithSettings({ path: '/imagens/' + hash}).then((dados)=>{
+        this.dropbox.sharingCreateSharedLinkWithSettings({ path: '/documentos/' + hash}).then((dados)=>{
           const substring= dados.result.url.substr(26).replace('dl=0','raw=1'); //URL= https://www.dropbox.com/s/
           cb(null,{ filename: substring});
         }).catch(error=>{
