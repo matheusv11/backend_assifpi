@@ -40,4 +40,4 @@ class DropboxStorage {
 
 }
 
-module.exports = () => new DropboxStorage();
+module.exports = {upload:  new DropboxStorage(), connection: dbx};

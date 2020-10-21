@@ -16,7 +16,7 @@ const storageType={
 
     }),
 
-    dropbox: dropbox()
+    dropbox: dropbox.upload
     
 }
 

@@ -1,6 +1,6 @@
 const fs= require('fs');
 const path= require('path');
-const {Dropbox}= require('dropbox');
+const dropbox= require('./dropbox');
 
 module.exports= (err, req,res,next)=>{
     if(err){
@@ -11,7 +11,7 @@ module.exports= (err, req,res,next)=>{
                 // console.log(dados[index])
                 dados.map((files)=>{
                     process.env.APP_DROPBOX_TOKEN ? 
-                    new Dropbox({accessToken: process.env.APP_DROPBOX_TOKEN}).filesDeleteV2({path: `/${files.filename}`})
+                    dropbox.connection.filesDeleteV2({path: `/${files.filename.split('/')[1].replace('?raw=1','')}`})
                     :
                     fs.unlinkSync(path.resolve(__dirname, `../documents/${files.filename}`))//Caso tenha dois campos e 1 não passe(ficar preso no cb) pode dar erro no server  
                 })
