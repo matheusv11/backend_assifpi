@@ -7,8 +7,6 @@ module.exports= (err, req,res,next)=>{
         if(req.files){
             const Objeto= Object.values(req.files)
             Objeto.map((dados,index)=>{
-                // console.log('Index: ', index)
-                // console.log(dados[index])
                 dados.map((files)=>{
                     process.env.APP_DROPBOX_TOKEN ? 
                     dropbox.connection.filesDeleteV2({path: `/documentos/${files.filename.split('/')[1].replace('?raw=1','')}`})
