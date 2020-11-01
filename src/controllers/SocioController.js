@@ -22,11 +22,6 @@ module.exports={
         const rg_file= req.files.rg_file;
         cnh ? compare=cnh : compare=rg_file;
 
-        if(!req.files.cpf_comprovante || !req.files.cpf_comprovante[1] || !compare || compare[0].fieldname==="rg_file" && !compare[1] || req.files.autorizacao_filiacao && !req.files.autorizacao_filiacao[1]){
-            return next({message:'Preencha todos arquivos necessários'})
-            // return res.status(401).send({message: 'Preencha todos arquivos necessários'});
-        }
-
         const {nome,email,senha, cpf, rg, endereco, telefones}= req.body;
         const response= await connection('socios').where('email', email).orWhere('cpf', cpf).select('email','cpf').first();
 
@@ -38,7 +33,6 @@ module.exports={
         const id= crypto.randomBytes(4).toString('hex');
         const hashed= await bcrypt.hash(senha, 10);
 
-        console.log('Tudo ok depois do hash');
         await connection('socios').insert({
             id,
             nome,
@@ -50,20 +44,18 @@ module.exports={
             telefones
         })
 
-        console.log('Tudo ok no insert socios');
         await connection('documentos').insert({
             // rg_frente: req.files.rg[0].filename || null,
-            rg_frente: req.files.rg_file ? req.files.rg_file[0].filename : null,
-            rg_verso: req.files.rg_file ? req.files.rg_file[1].filename : null,
-            cnh: req.files.cnh ? req.files.cnh[0].filename : null,
-            cpf: req.files.cpf_comprovante[0].filename,
-            comprovante: req.files.cpf_comprovante[1].filename,
-            autorizacao: req.files.autorizacao_filiacao ? req.files.autorizacao_filiacao[0].filename : null,
-            filiacao: req.files.autorizacao_filiacao ? req.files.autorizacao_filiacao[1].filename : null,
+            rg_frente: 'req.files.rg_file ? req.files.rg_file[0].filename : null',
+            rg_verso: 'req.files.rg_file ? req.files.rg_file[1].filename : null',
+            cnh: 'req.files.cnh ? req.files.cnh[0].filename : null',
+            cpf: 'req.files.cpf_comprovante[0].filename',
+            comprovante: 'req.files.cpf_comprovante[1].filename',
+            autorizacao: 'req.files.autorizacao_filiacao ? req.files.autorizacao_filiacao[0].filename : null',
+            filiacao: 'req.files.autorizacao_filiacao ? req.files.autorizacao_filiacao[1].filename : null',
             socio_id: id
         })
 
-        console.log('Tudo ok no insert documentos');
         return res.status(200).send({message: 'Solicitacao de cadastro realizada com sucesso'});
         
     },
