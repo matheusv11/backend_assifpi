@@ -22,9 +22,10 @@ const storageType={
 
 
 module.exports={
-    storage: storageType[process.env.NODE_ENV ? 'dropbox' : 'local'],
+    // storage: storageType[process.env.NODE_ENV ? 'dropbox' : 'local'],
 
     // storage: storageType['dropbox'],
+    storage: storageType['local'],
 
     limits:{
         fileSize: 1048576,//bytes 
