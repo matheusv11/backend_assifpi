@@ -38,6 +38,7 @@ module.exports={
         const id= crypto.randomBytes(4).toString('hex');
         const hashed= await bcrypt.hash(senha, 10);
 
+        console.log('Tudo ok depois do hash');
         await connection('socios').insert({
             id,
             nome,
@@ -49,6 +50,7 @@ module.exports={
             telefones
         })
 
+        console.log('Tudo ok no insert socios');
         await connection('documentos').insert({
             // rg_frente: req.files.rg[0].filename || null,
             rg_frente: req.files.rg_file ? req.files.rg_file[0].filename : null,
@@ -60,6 +62,8 @@ module.exports={
             filiacao: req.files.autorizacao_filiacao ? req.files.autorizacao_filiacao[1].filename : null,
             socio_id: id
         })
+
+        console.log('Tudo ok no insert documentos');
         return res.status(200).send({message: 'Solicitacao de cadastro realizada com sucesso'});
         
     },
