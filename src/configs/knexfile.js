@@ -29,7 +29,14 @@ module.exports = {
     //   password: process.env.APP_DATABASE_PASSWORD,
     //   database: process.env.APP_DATABASE,
     // },
-    connection: process.env.DATABASE_URL,
+    
+    connection: {
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+          rejectUnauthorized: false
+        }
+      }
+    },
     seeds:{
       directory: '../database/seeds'
     },
