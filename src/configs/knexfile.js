@@ -21,7 +21,7 @@ module.exports = {
 
   },
 
-  production:{
+  production: {
     client: 'pg',
     // connection:{
     //   host: process.env.APP_DATABASE_HOST,
@@ -35,7 +35,6 @@ module.exports = {
       ssl: {
           rejectUnauthorized: false
         }
-      }
     },
     seeds:{
       directory: '../database/seeds'
